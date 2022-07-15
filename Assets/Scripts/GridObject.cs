@@ -4,6 +4,14 @@ using UnityEngine;
 
 namespace CustomGrid
 {
+    public enum ObjectType
+    {
+        Wall,
+        Pit,
+        Enemy,
+        Player,
+    }
+
     public class GridObject : MonoBehaviour
     {
         // not sure if need this, just use unit grid
@@ -16,10 +24,9 @@ namespace CustomGrid
 
         public Vector2Int GridPosition { get; private set; }
 
-        // Start is called before the first frame update
-        void Start()
+        private void Awake()
         {
-        
+            GridPosition = WorldToGridPos();
         }
 
         // Update is called once per frame
@@ -30,7 +37,8 @@ namespace CustomGrid
 
         private void FixedUpdate()
         {
-            MoveToGridPos();
+            if(canMove)
+                MoveToGridPos();
         }
 
         // use in fixed update
@@ -43,6 +51,11 @@ namespace CustomGrid
                                         GridToWorldPos(), 
                                         speed * Time.fixedDeltaTime
                                     );
+        }
+
+        bool TryMoveOnGrid(Vector2Int delta)
+        {
+            return false;
         }
 
         /// <summary>
@@ -62,6 +75,14 @@ namespace CustomGrid
             pos *= gridToWorldScale;
             pos += gridToWorldOffset;
             return pos;
+        }
+
+        private Vector2Int WorldToGridPos()
+        {
+            Vector2 pos = transform.position;
+            pos -= gridToWorldOffset;
+            pos /= gridToWorldScale;
+            return new Vector2Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y));
         }
 
         #endregion

@@ -34,7 +34,5 @@ public class EventManager : MonoSingleton<EventManager>
         TurnFinished?.Invoke();
     }
 
-
-
     #endregion
 }
