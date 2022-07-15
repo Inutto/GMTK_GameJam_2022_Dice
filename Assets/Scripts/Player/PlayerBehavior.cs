@@ -10,6 +10,7 @@ public class PlayerBehavior : GridObject
 
     private void Update()
     {
+
         
     }
 
