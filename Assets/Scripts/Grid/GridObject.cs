@@ -32,6 +32,9 @@ namespace CustomGrid
         [Header("Health")]
         [SerializeField] int health;
 
+        
+
+
         public Vector2Int GridPosition { get; private set; }
 
         protected bool _isMoving;
@@ -146,10 +149,17 @@ namespace CustomGrid
                 diceAttribute.UpdateNum();
             }
 
+            // Combat calculation
+
 
             ActionFinish();
             DebugF.Log("Finish Roll", this.gameObject);
         }
+
+
+
+
+
 
         #endregion
 
@@ -158,7 +168,7 @@ namespace CustomGrid
 
         #region health
 
-        public void UpdateHealth(int delta)
+        protected virtual void UpdateHealth(int delta)
         {
             health += delta;
             if(health <= 0)
