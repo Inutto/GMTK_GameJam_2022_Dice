@@ -14,8 +14,79 @@ namespace CustomGrid
 
     public class GridManager : MonoSingleton<GridManager>
     {
-        Dictionary<Vector2Int, GridObject> GridData = new();
-        [SerializeField] Vector2Int dimensions;
+        [SerializeField] Dictionary<Vector2Int, GridObject> GridData = new();
+        [SerializeField] Vector2Int dimensions; // start from 0, so 9 * 9 is actually 10 * 10, leftCornor = (0, 0)
+
+        [Header("Pathfinder")]
+        GridGraph map;
+
+
+        private void UpdatePathfindingGridMap()
+        {
+            // init map
+            map = new GridGraph(dimensions.x + 1, dimensions.y + 1);
+
+            // init obstacles by griddata
+            List<Vector2> _walls = new List<Vector2>();
+            List<Vector2> _forests = new List<Vector2>();
+            foreach (var pairs in GridData)
+            {
+                if(pairs.Value.Type == ObjectType.Wall || 
+                    pairs.Value.Type == ObjectType.Pit || 
+                    pairs.Value.Type == ObjectType.Enemy)
+          
+                {
+                    _walls.Add(new Vector2(pairs.Key.x, pairs.Key.y));
+                }
+            }
+
+            map.Walls = _walls;
+            map.Forests = _forests;
+
+        }
+
+
+
+        /// <summary>
+        /// Generate the next direction (delta) for the start obj if he wants to fuck the goal
+        /// return zero as default, if something stupid happens
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="goal"></param>
+        /// <returns></returns>
+        public Vector2Int GenerateNextMove(GridObject start, GridObject goal)
+        {
+
+            UpdatePathfindingGridMap();
+
+            Vector2 startPosition = start.GridPosition;
+            Vector2 goalPosition = goal.GridPosition;
+
+            var path = AStar.Search(map,
+                map.Grid[start.GridPosition.x, start.GridPosition.y],
+                map.Grid[goal.GridPosition.x, goal.GridPosition.y]);
+
+
+            if(path == null || path.Count < 1)
+            {
+                DebugF.LogError("Path Error. You idiot. I will return a up for subs");
+                return Vector2Int.zero;
+            } else if(path.Count == 1)
+            {
+                DebugF.LogWarning("Next path is target. I will not move in this case.");
+                return Vector2Int.zero;
+            }
+
+            var nextMove = path[0];
+            var delta = new Vector2Int(
+                    (int)nextMove.Position.x - start.GridPosition.x,
+                    (int)nextMove.Position.y - start.GridPosition.y);
+
+            return delta;
+            
+        }
+
+
 
         private void Start()
         {

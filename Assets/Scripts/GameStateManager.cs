@@ -13,7 +13,7 @@ namespace CustomGrid
         };
 
         public List<GridObject> actors = new();
-        GridObject player;
+        public GridObject player;
 
         int currentIndex;
 

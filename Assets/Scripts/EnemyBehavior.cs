@@ -10,32 +10,28 @@ public class EnemyBehavior : GridObject
     {
         if (obj != this) return;
 
-        // random move for test
-        Vector2Int up = new Vector2Int(0, 1);
-        Vector2Int down = new Vector2Int(0, -1);
-        Vector2Int left = new Vector2Int(-1, 0);
-        Vector2Int right = new Vector2Int(1, 0);
+        // Use pathfinder
+        var delta = GridManager.Instance.GenerateNextMove(this, GameStateManager.Instance.player);
+        var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var temp);
+        if(msg == TryGetObjMsg.FLOOR)
+        {
+            MoveAndRollOne(delta, true);
+        } else 
+        {
+            DebugF.LogWarning("Pathfind failed: not valid next move :" +
+               delta.ToString().ToRichTextColor(Color.red) + " for GridObject: " +
+               this.ToString().ToRichTextColor(Color.green));
 
-        if (TryMoveOnGrid(up))
-        {
-            MoveAndRollOne(up, true);
+
+
+            // TO BE IMPL: DONT MOVE AND END THIS TURN
+            return;
+
         }
-        else if (TryMoveOnGrid(down))
-        {
-            MoveAndRollOne(down, true);
-        }
-        else if (TryMoveOnGrid(left))
-        {
-            MoveAndRollOne(left, true);
-        }
-        else if (TryMoveOnGrid(right))
-        {
-            MoveAndRollOne(right, true);
-        }
-        else
-        {
-            DebugF.LogWarning("No Where To Go");
-        }
+
+
+        
+
     }
 
     protected override void OnTakeDamage(GridObject source, GridObject target, int damage)
