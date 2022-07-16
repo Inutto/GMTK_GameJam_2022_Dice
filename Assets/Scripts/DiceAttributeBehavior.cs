@@ -1,139 +1,102 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
 /// <summary>
 /// Add This to a gridObject if it needs a dice attribtued health & combat value
 /// </summary>
+
+/// 
+///             up
+///             ^    forward
+///             |   /
+///             |  /                CAUTION:
+/// left <---       ---> right      Forward is INTO the board!  (z+)
+///           / |                   Back is OUT OF the board!   (z-)
+///          /  |
+///       back  v
+///            down
+///
 public class DiceAttributeBehavior : MonoBehaviour
 {
+    Dictionary<string, int> faceNums = new Dictionary<string, int>();
 
-    enum DiceDirection
-    {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        FORWARD, 
-        BACKWARD,
-    }
+    // for serialization purpose, Dictionary.ToString() may not be
+    // predictable, but the order is correct for now. Use the Dict
+    // for rigid purposes
+    [SerializeField] List<int> nums = new List<int>();
 
-    string[] DiceDirName = new string[6] { "^", "down", "<--", "-->", "Forward", "Backward" };
-
-    // Dice Facing -> World Direction
-    List<Vector3> diceFace2worldList = new List<Vector3>(new Vector3[6]);
-    //{
-    //    new vector3(0f, 1f, 0f),
-    //    new vector3(0f, -1f, 0f),
-    //    new vector3(-1f, 0f, 0f),
-    //    new vector3(1f, 0f, 0f),
-    //    new vector3(0f, 0f, 1f),
-    //    new vector3(0f, 0f, -1f) ,
-    //};
-
-
-    // World Direction -> Transform Direction
-    List<Vector3> world2transList = new List<Vector3>(new Vector3[6]);
- 
-    // Num record
-    [SerializeField] List<int> nums = new List<int>(); // follow the order UP DOWN LEFT RIGHT FORWARD BACKWARD
-
+    [SerializeField] DiceUIBehavior debugUI;
 
     private void Start()
     {
-        InitWorldFacing();
-        UpdateWorld2Trans();
-    }
-    
-
-    public void InitWorldFacing()
-    {
-
-        diceFace2worldList[0] = transform.up;
-        diceFace2worldList[1] = transform.up * -1f;
-        diceFace2worldList[2] = transform.right * -1f;
-        diceFace2worldList[3] = transform.right;
-        diceFace2worldList[4] = transform.forward;
-        diceFace2worldList[5] = transform.forward * -1f;
-
-        // TEST: only for UI Debug
-        DiceUIBehavior UIBehavior;
-        if (TryGetComponent<DiceUIBehavior>(out UIBehavior))
-        {
-            UIBehavior.UpdateNum(nums);
-        }
+        Init();
+        debugUI.UpdateNumDict(faceNums);
     }
 
+    private void FixedUpdate()
+    {
+        nums = faceNums.Values.ToList();
+    }
 
-
-    public void UpdateWorld2Trans()
+    public void Init()
     {
 
-        for (int i = 0; i < world2transList.Count; ++i)
-        {
-            world2transList[i] = Vector3.zero;
-        }
-
-
-        world2transList[0] = transform.up; // TransformDirection.UP
-        world2transList[1] = transform.up * -1f;
-        world2transList[2] = transform.right * -1f;
-        world2transList[3] = transform.right;
-        world2transList[4] = transform.forward;
-        world2transList[5] = transform.forward * -1f;
-
-        foreach(var vec in world2transList)
-        {
-            DebugF.Log("Current ->" + vec);
-        }
+        faceNums.Add("up", 1);
+        faceNums.Add("down", 6);
+        faceNums.Add("left", 2);
+        faceNums.Add("right", 5);
+        faceNums.Add("forward", 3);
+        faceNums.Add("back", 4);
 
     }
 
-
-    public void UpdateNum()
+    public void UpdateNum(Vector3 axis)
     {
-        UpdateWorld2Trans();
-
-        int[] tempNums = new int[6];
-
-        for(int i = 0; i < nums.Count; ++i)
+        // right
+        if(axis == Vector3.down)
         {
-            var targetDir = diceFace2worldList[i]; // 0,1,0 (UP)
-
-            DebugF.Log(targetDir);
-
-            int targetIndex = -1;
-            foreach(var vec in world2transList)
-            {
-                if(targetDir == vec) targetIndex = world2transList.IndexOf(vec); // transform.forward
-            }
-            DebugF.Log(targetIndex); // 4
-            if (targetIndex == -1)
-            {
-                DebugF.LogWarning("No Matching Index for vec: " + targetDir);
-                return;
-            }
-
-            tempNums[i] = nums[targetIndex]; // temp[0] = nums[4], NOW UP = PAST FORWARD
-            DebugF.Log("Now " + DiceDirName[i] + " = Past " + DiceDirName[targetIndex]);
-
+            int temp = faceNums["back"];
+            faceNums["back"] = faceNums["left"];
+            faceNums["left"] = faceNums["forward"];
+            faceNums["forward"] = faceNums["right"];
+            faceNums["right"] = temp;
         }
 
-        for(int i = 0; i < nums.Count; ++i)
+        // left
+        if(axis == Vector3.up)
         {
-            nums[i] = tempNums[i];
+            int temp = faceNums["back"];
+            faceNums["back"] = faceNums["right"];
+            faceNums["right"] = faceNums["forward"];
+            faceNums["forward"] = faceNums["left"];
+            faceNums["left"] = temp;
         }
 
-
-        // TEST: only for UI Debug
-        DiceUIBehavior UIBehavior;
-        if (TryGetComponent<DiceUIBehavior>(out UIBehavior))
+        // up
+        if (axis == Vector3.right)
         {
-            UIBehavior.UpdateNum(nums);
+            int temp = faceNums["back"];
+            faceNums["back"] = faceNums["down"];
+            faceNums["down"] = faceNums["forward"];
+            faceNums["forward"] = faceNums["up"];
+            faceNums["up"] = temp;
         }
 
+        // down
+        if (axis == Vector3.left)
+        {
+            int temp = faceNums["back"];
+            faceNums["back"] = faceNums["up"];
+            faceNums["up"] = faceNums["forward"];
+            faceNums["forward"] = faceNums["down"];
+            faceNums["down"] = temp;
+        }
 
+        debugUI.UpdateNumDict(faceNums);
+        
     }
 
 

@@ -100,7 +100,8 @@ namespace CustomGrid
             if (obj != this)
             {
                 return;
-            } else
+            } 
+            else
             {
                 DebugF.Log(obj.gameObject.name, obj.gameObject);
             }
@@ -146,7 +147,7 @@ namespace CustomGrid
             DiceAttributeBehavior diceAttribute;
             if (TryGetComponent<DiceAttributeBehavior>(out diceAttribute))
             {
-                diceAttribute.UpdateNum();
+                diceAttribute.UpdateNum(axis);
             }
 
             // Combat calculation
