@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
     
 public class TimerF
 {
@@ -70,4 +71,14 @@ public class TimerF
 
         remainingTime -= Time.deltaTime;
     }
+
+
+    public static IEnumerator DoThisAfterSeconds(float seconds, Action things)
+    {
+        yield return new WaitForSeconds(seconds);
+        things?.Invoke();
+    }
 }
+
+
+

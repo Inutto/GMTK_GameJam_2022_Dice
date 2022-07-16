@@ -180,7 +180,7 @@ namespace CustomGrid
 
         #region util
         // not sure if need this
-        private Vector2 GridToWorldPos()
+        protected Vector2 GridToWorldPos()
         {
             Vector2 pos = transform.position;
             pos *= gridToWorldScale;
@@ -188,7 +188,7 @@ namespace CustomGrid
             return pos;
         }
 
-        private Vector2Int WorldToGridPos()
+        protected Vector2Int WorldToGridPos()
         {
             Vector2 pos = transform.position;
             pos -= gridToWorldOffset;

@@ -12,6 +12,10 @@ public class PlayerBehavior : GridObject
 
     [SerializeField] DiceAttributeBehavior _dice;
 
+    [Header("Damage Area")]
+    [SerializeField] List<Vector2Int> currentAreaList;
+    bool canDrawGizmos = false;
+
     private void Update()
     {
         if (!isMyTurn) return;
@@ -82,6 +86,14 @@ public class PlayerBehavior : GridObject
     void AttackTarget(GridObject obj, Vector2Int delta)
     {
         EventManager.Instance.CallInflictDamage(this, obj, _dice.GetFaceNum(DeltaToDirString(delta)));
+        // TEST: damange area
+        DamageAreaBehavior damageAreaBehavior;
+        if (TryGetComponent<DamageAreaBehavior>(out damageAreaBehavior))
+        {
+            currentAreaList = damageAreaBehavior.GetDamageArea(0, delta);
+            canDrawGizmos = true;
+            TimerF.DoThisAfterSeconds(1f, () => { canDrawGizmos = false; });
+        }
     }
 
     protected override void OnNextActor(GridObject obj)
@@ -100,5 +112,17 @@ public class PlayerBehavior : GridObject
         
         // I'm not sure what should default be so here's a forward for you :(
         return "forward";
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red; 
+        foreach(var point in currentAreaList)
+        {
+            var drawPos = transform.position + new Vector3(point.x, point.y, 0);
+            Gizmos.DrawSphere(drawPos, 0.4f);
+        }
+        
     }
 }
