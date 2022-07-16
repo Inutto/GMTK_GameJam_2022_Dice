@@ -24,7 +24,7 @@ namespace CustomGrid
 
 
         [Header("Movement")]
-        [SerializeField, Range(1, 10)] float rotateSpeed = 5f;
+        [SerializeField, Range(1, 10)] protected float rotateSpeed = 5f;
         [SerializeField, Range(0.1f, 2)] float moveDuration = 0.2f;
 
         [SerializeField] bool canMove = true;
@@ -68,7 +68,7 @@ namespace CustomGrid
 
         #region Encapsuled Actions
 
-        protected void MoveAndRollOne(Vector2Int delta)
+        protected void MoveAndRollOne(Vector2Int delta, bool callFinish)
         {
             GridPosition += delta;
 
@@ -76,13 +76,13 @@ namespace CustomGrid
             {
                 var anchor = transform.position + new Vector3(delta.x > 0 ? 0.5f : -0.5f, 0, 0.5f);
                 var axis = Vector3.Cross(Vector3.back, delta.x > 0 ? Vector3.right : Vector3.left);
-                StartCoroutine(Roll(anchor, axis, true));
+                StartCoroutine(Roll(anchor, axis, callFinish));
             }
             else if(delta.y != 0)
             {
                 var anchor = transform.position + new Vector3(0, delta.y > 0 ? 0.5f : -0.5f, 0.5f);
                 var axis = Vector3.Cross(Vector3.back, delta.y > 0 ? Vector3.up : Vector3.down);
-                StartCoroutine(Roll(anchor, axis, true));
+                StartCoroutine(Roll(anchor, axis, callFinish));
             }
         }
 

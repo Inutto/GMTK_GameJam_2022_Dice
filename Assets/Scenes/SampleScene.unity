@@ -1587,6 +1587,8 @@ MonoBehaviour:
   canMove: 1
   health: 0
   _dice: {fileID: 996884576}
+  _damageAreaBehavior: {fileID: 0}
+  currentAreaList: []
 --- !u!114 &996884576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2578,7 +2580,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7231789, y: 1}
+    m_SensorSize: {x: 1.6277373, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0

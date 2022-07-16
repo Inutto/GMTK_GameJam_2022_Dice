@@ -18,19 +18,19 @@ public class EnemyBehavior : GridObject
 
         if (TryMoveOnGrid(up))
         {
-            MoveAndRollOne(up);
+            MoveAndRollOne(up, true);
         }
         else if (TryMoveOnGrid(down))
         {
-            MoveAndRollOne(down);
+            MoveAndRollOne(down, true);
         }
         else if (TryMoveOnGrid(left))
         {
-            MoveAndRollOne(left);
+            MoveAndRollOne(left, true);
         }
         else if (TryMoveOnGrid(right))
         {
-            MoveAndRollOne(right);
+            MoveAndRollOne(right, true);
         }
         else
         {
@@ -51,30 +51,33 @@ public class EnemyBehavior : GridObject
         }
         else
         {
-            // since InflictDamage is invoked before player move, delta length should be 1
+            // since InflictDamage is invoked before player move, delta length should be 1 when player
+            // crashes enemy, but longer when player is area attacking
             Vector2Int delta = GridPosition - source.GridPosition;
-            var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var obj);
-            if (msg == TryGetObjMsg.FLOOR)
+            var msgBehind = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var obj);
+            if(delta.magnitude == 1)    // only knockback when player crash enemy
             {
-                KnockBack(delta);
-            }
-            else if (msg == TryGetObjMsg.SUCCESS)
-            {
-                if(obj.Type == ObjectType.Enemy)
+                if (msgBehind == TryGetObjMsg.FLOOR)
                 {
-                    EventManager.Instance.CallInflictDamage(this, obj, 1);
+                    KnockBack(delta);
                 }
-                EventManager.Instance.CallEnemyDied(this);
-                // TODO: change this later
-                gameObject.SetActive(false);
+                else if (msgBehind == TryGetObjMsg.SUCCESS)
+                {
+                    if(obj.Type == ObjectType.Enemy)
+                    {
+                        EventManager.Instance.CallInflictDamage(this, obj, 1);
+                    }
+                    EventManager.Instance.CallEnemyDied(this);
+                    // TODO: change this later
+                    gameObject.SetActive(false);
+                }
+                else if (msgBehind == TryGetObjMsg.OUTOFBOUNDS)
+                {
+                    EventManager.Instance.CallEnemyDied(this);
+                    // TODO: change this later
+                    gameObject.SetActive(false);
+                }
             }
-            else if (msg == TryGetObjMsg.OUTOFBOUNDS)
-            {
-                EventManager.Instance.CallEnemyDied(this);
-                // TODO: change this later
-                gameObject.SetActive(false);
-            }
-            
         }
     }
 

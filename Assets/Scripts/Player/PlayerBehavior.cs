@@ -6,11 +6,13 @@ using DG.Tweening;
 using CustomGrid;
 
 [RequireComponent(typeof(DiceAttributeBehavior))]
+[RequireComponent(typeof(DamageAreaBehavior))]
 public class PlayerBehavior : GridObject
 {
     bool isMyTurn;
 
     [SerializeField] DiceAttributeBehavior _dice;
+    [SerializeField] DamageAreaBehavior _damageAreaBehavior;
 
     [Header("Damage Area")]
     [SerializeField] List<Vector2Int> currentAreaList;
@@ -44,8 +46,6 @@ public class PlayerBehavior : GridObject
             {
                 case TryGetObjMsg.FLOOR:
                     PlayerMove(delta);
-                    DebugF.Log("Ready to Damage");
-                    DamageArea(delta);
                     isMyTurn = false;
                     break;
                 case TryGetObjMsg.OUTOFBOUNDS:
@@ -83,7 +83,9 @@ public class PlayerBehavior : GridObject
 
     void PlayerMove(Vector2Int delta)
     {
-        MoveAndRollOne(delta);
+        MoveAndRollOne(delta, false);
+        DebugF.Log("Ready to Damage");
+        DamageArea(delta);
     }
 
     void AttackTarget(GridObject obj, Vector2Int delta)
@@ -99,10 +101,47 @@ public class PlayerBehavior : GridObject
         if (TryGetComponent<DamageAreaBehavior>(out damageAreaBehavior))
         {
             DebugF.Log("Apply Damage Area");
-            currentAreaList = damageAreaBehavior.GetDamageArea(0, delta);
+            currentAreaList = damageAreaBehavior.GetDamageArea(_dice.GetFaceNum(DeltaToDirString(delta))-1, delta);
             canDrawGizmos = true;
             StartCoroutine(TimerF.DoThisAfterSeconds(2f, () => { canDrawGizmos = false; }));
         }
+
+        // add 0.1f in time just in case
+        StartCoroutine(TimerF.DoThisAfterSeconds(90f / rotateSpeed * 0.01f + 0.1f, () => 
+            {
+                // since we've already rolled, just get dmg from the face facing forward (down the board)
+                DamageAllEnemyInArea(currentAreaList, _dice.GetFaceNum("forward"), true);
+            }));
+    }
+
+    void DamageAllEnemyInArea(List<Vector2Int> area, int dmg, bool callFinish)
+    {
+        var enemies = FindAllEnemyInArea(area, Vector2Int.zero);  // delta is zero here bcz I thought I'll call this before moving but apparently now its called afterwards
+        foreach (var enemy in enemies)
+        {
+            EventManager.Instance.CallInflictDamage(this, enemy, dmg);
+            DebugF.Log("Damaging enemy " + enemy.ToString() + " for damage of " + dmg);
+        }
+
+        if(callFinish) EventManager.Instance.CallFinishAction(this);
+    }
+
+    List<GridObject> FindAllEnemyInArea(List<Vector2Int> currentArea, Vector2Int delta)
+    {
+        List<GridObject> ans = new();
+        GridObject obj;
+        foreach(var item in currentArea)
+        {
+            var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta + item, out obj);
+            if(msg == TryGetObjMsg.SUCCESS)
+            {
+                if(obj.Type == ObjectType.Enemy)
+                {
+                    ans.Add(obj);
+                }
+            }
+        }
+        return ans;
     }
 
     protected override void OnNextActor(GridObject obj)
@@ -118,8 +157,9 @@ public class PlayerBehavior : GridObject
         if (delta == Vector2Int.left) return "left";
         if (delta == Vector2Int.up) return "up";
         if (delta == Vector2Int.down) return "down";
-        
+
         // I'm not sure what should default be so here's a forward for you :(
+        DebugF.LogError("You gave me the wrong Delta mate. Returning default 'forward'.");
         return "forward";
     }
 
@@ -127,7 +167,6 @@ public class PlayerBehavior : GridObject
     private void OnDrawGizmos()
     {
         if(!canDrawGizmos) return;
-
 
         // TEmp
         Gizmos.color = Color.red; 
