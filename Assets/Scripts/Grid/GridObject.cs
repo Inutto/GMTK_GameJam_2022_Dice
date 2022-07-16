@@ -93,6 +93,13 @@ namespace CustomGrid
             Move(delta, false);
         }
 
+        protected void DoNothingEndTurn()
+        {
+            // Grid Pos stays the same
+
+            EndTurn();
+        }
+
         #endregion
 
         #region EventListeners
@@ -174,6 +181,11 @@ namespace CustomGrid
                         DebugF.Log("Finish Move", this.gameObject);
                     }
                 );
+        }
+
+        void EndTurn()
+        {
+            TimerF.DoThisAfterSeconds(90f/rotateSpeed * 0.01f, () => { EventManager.Instance.CallFinishAction(this); });
         }
 
         #endregion
