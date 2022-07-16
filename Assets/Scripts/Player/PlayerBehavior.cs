@@ -44,6 +44,8 @@ public class PlayerBehavior : GridObject
             {
                 case TryGetObjMsg.FLOOR:
                     PlayerMove(delta);
+                    DebugF.Log("Ready to Damage");
+                    DamageArea(delta);
                     isMyTurn = false;
                     break;
                 case TryGetObjMsg.OUTOFBOUNDS:
@@ -64,6 +66,7 @@ public class PlayerBehavior : GridObject
                             DebugF.LogError("WTF? There's 2 players or delta is falsly calculated.");
                             break;
                         default:
+                            
                             break;
                     }
                     break;
@@ -86,10 +89,16 @@ public class PlayerBehavior : GridObject
     void AttackTarget(GridObject obj, Vector2Int delta)
     {
         EventManager.Instance.CallInflictDamage(this, obj, _dice.GetFaceNum(DeltaToDirString(delta)));
+
+    }
+
+    void DamageArea(Vector2Int delta)
+    {
         // TEST: damange area
         DamageAreaBehavior damageAreaBehavior;
         if (TryGetComponent<DamageAreaBehavior>(out damageAreaBehavior))
         {
+            DebugF.Log("Apply Damage Area");
             currentAreaList = damageAreaBehavior.GetDamageArea(0, delta);
             canDrawGizmos = true;
             TimerF.DoThisAfterSeconds(1f, () => { canDrawGizmos = false; });
@@ -117,6 +126,10 @@ public class PlayerBehavior : GridObject
 
     private void OnDrawGizmos()
     {
+        if(!canDrawGizmos) return;
+
+
+        // TEmp
         Gizmos.color = Color.red; 
         foreach(var point in currentAreaList)
         {

@@ -8,7 +8,7 @@ public class DamageAreaBehavior : MonoBehaviour
 {
 
     [SerializeField] DamageAreaList[] damageAreaCollection = new DamageAreaList[6];
-    List<Vector2Int> currentAreaList;
+    
 
     public List<Vector2Int> GetDamageArea(int areaType, Vector2Int direction)
     {
@@ -21,19 +21,8 @@ public class DamageAreaBehavior : MonoBehaviour
         }
 
 
-        currentAreaList = initialAreaList.Rotate(direction);
-        return currentAreaList;
-
-        
+        return initialAreaList.Rotate(direction);
 
     }
-
-    
-
-
-
-
-
-
 
 }
