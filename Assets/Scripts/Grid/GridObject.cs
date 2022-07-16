@@ -17,14 +17,20 @@ namespace CustomGrid
     {
         public ObjectType Type;
 
+        [Header("World Metrics")]
         // not sure if need this, just use unit grid
         [SerializeField] Vector2 gridToWorldScale;
         [SerializeField] Vector2 gridToWorldOffset;
 
+
+        [Header("Movement")]
         [SerializeField] float speed;
         [SerializeField] float moveDuration;
 
         [SerializeField] bool canMove = true;
+
+        [Header("Health")]
+        [SerializeField] int health;
 
         public Vector2Int GridPosition { get; private set; }
 
@@ -88,7 +94,13 @@ namespace CustomGrid
         /// <param name="obj">Accepted object from event</param>
         protected virtual void OnNextActor(GridObject obj)
         {
-            if (obj != this) return;
+            if (obj != this)
+            {
+                return;
+            } else
+            {
+                DebugF.Log(obj.gameObject.name, obj.gameObject);
+            }
         }
 
         protected virtual void ActionFinish()
@@ -127,10 +139,36 @@ namespace CustomGrid
             transform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), Mathf.Round(transform.position.z));
             _isMoving = false;
 
+            // TEST: rotate dice
+            DiceAttributeBehavior diceAttribute;
+            if (TryGetComponent<DiceAttributeBehavior>(out diceAttribute))
+            {
+                diceAttribute.UpdateNum();
+            }
+
+
             ActionFinish();
+            DebugF.Log("Finish Roll", this.gameObject);
         }
 
         #endregion
+
+
+
+
+        #region health
+
+        public void UpdateHealth(int delta)
+        {
+            health += delta;
+            if(health <= 0)
+            {
+                // Death Event
+            }
+        }
+
+
+        #endregion health
     }
 }
 

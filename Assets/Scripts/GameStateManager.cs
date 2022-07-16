@@ -12,7 +12,7 @@ namespace CustomGrid
             ObjectType.Enemy,
         };
 
-        List<GridObject> actors = new();
+        public List<GridObject> actors = new();
         GridObject player;
 
         int currentIndex;
@@ -37,8 +37,7 @@ namespace CustomGrid
             }
 
             // TODO: Remove Later
-            currentIndex = -1;
-            EventManager.Instance.CallNextActor(player);
+            ResetIndexAndCallPlayer();
         }
 
         // Update is called once per frame
@@ -64,13 +63,20 @@ namespace CustomGrid
                 currentIndex--;
         }
 
-        void OnFinishAction(GridObject obj)
+        public void OnFinishAction(GridObject obj)
         {
+
+            DebugF.Log(obj.ToString());
+
+            // if player
             if (currentIndex == -1)
             {
                 EventManager.Instance.CallNextActor(player);
                 currentIndex++;
+                return;
             }
+
+            
 
             //if (actors[currentIndex] != obj)
             //{
@@ -81,17 +87,27 @@ namespace CustomGrid
             // if depleted all grid objects in this turn
             if (currentIndex == actors.Count)
             {
-                currentIndex = -1;
+                ResetIndexAndCallPlayer();
                 //EventManager.Instance.CallTurnFinished();
             }
             else
             {
-                currentIndex++;
                 EventManager.Instance.CallNextActor(actors[currentIndex]);
+                currentIndex++;
             }
         }
 
-        
+
+        #region temp
+        void ResetIndexAndCallPlayer()
+        {
+            currentIndex = 0;
+            EventManager.Instance.CallNextActor(player);
+        }
+
+        #endregion temp
+
+
     }
 }
 
