@@ -5,9 +5,12 @@ using DG.Tweening;
 
 using CustomGrid;
 
+[RequireComponent(typeof(DiceAttributeBehavior))]
 public class PlayerBehavior : GridObject
 {
     bool isMyTurn;
+
+    [SerializeField] DiceAttributeBehavior _dice;
 
     private void Update()
     {
@@ -17,27 +20,51 @@ public class PlayerBehavior : GridObject
         {
             var hor = Input.GetAxis("Horizontal");
             var ver = Input.GetAxis("Vertical");
+            Vector2Int delta = Vector2Int.zero;
             if (hor != 0)
             {
-                Vector2Int delta = new Vector2Int(hor > 0 ? 1 : -1, 0);
-                if (TryMoveOnGrid(delta))
-                {
-                    MoveAndRollOne(delta);
-                    isMyTurn = false;
-                }
-
-                // cant move there, do sth
+                //delta = new Vector2Int(hor > 0 ? 1 : -1, 0);
+                delta = hor > 0? Vector2Int.right : Vector2Int.left;
             }
             else if (ver != 0)
             {
-                Vector2Int delta = new Vector2Int(0, ver > 0 ? 1 : -1);
-                if (TryMoveOnGrid(delta))
-                {
-                    MoveAndRollOne(delta);
-                    isMyTurn = false;
-                }
+                //delta = new Vector2Int(0, ver > 0 ? 1 : -1);
+                delta = ver > 0 ? Vector2Int.up : Vector2Int.down;
+            }
 
-                // cant move there, do sth
+            // if no input return
+            if (delta == Vector2Int.zero) return;
+
+            var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var obj);
+            switch (msg)
+            {
+                case TryGetObjMsg.FLOOR:
+                    PlayerMove(delta);
+                    isMyTurn = false;
+                    break;
+                case TryGetObjMsg.OUTOFBOUNDS:
+                    break;
+                case TryGetObjMsg.SUCCESS:
+                    switch (obj.Type)
+                    {
+                        case ObjectType.Wall:
+                            break;
+                        case ObjectType.Pit:
+                            break;
+                        case ObjectType.Enemy:
+                            AttackTarget(obj, delta);
+                            PlayerMove(delta);
+                            isMyTurn = false;
+                            break;
+                        case ObjectType.Player:
+                            DebugF.LogError("WTF? There's 2 players or delta is falsly calculated.");
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -47,11 +74,31 @@ public class PlayerBehavior : GridObject
         
     }
 
+    void PlayerMove(Vector2Int delta)
+    {
+        MoveAndRollOne(delta);
+    }
+
+    void AttackTarget(GridObject obj, Vector2Int delta)
+    {
+        EventManager.Instance.CallInflictDamage(this, obj, _dice.GetFaceNum(DeltaToDirString(delta)));
+    }
 
     protected override void OnNextActor(GridObject obj)
     {
         if (obj != this) return;
 
         isMyTurn = true;
+    }
+
+    string DeltaToDirString(Vector2Int delta)
+    {
+        if (delta == Vector2Int.right) return "right";
+        if (delta == Vector2Int.left) return "left";
+        if (delta == Vector2Int.up) return "up";
+        if (delta == Vector2Int.down) return "down";
+        
+        // I'm not sure what should default be so here's a forward for you :(
+        return "forward";
     }
 }

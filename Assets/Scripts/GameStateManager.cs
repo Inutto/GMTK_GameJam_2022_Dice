@@ -21,6 +21,7 @@ namespace CustomGrid
         void Start()
         {
             EventManager.Instance.FinishAction.AddListener(OnFinishAction);
+            EventManager.Instance.EnemyDied.AddListener(OnEnemyDied);
 
             var gridObjs = FindObjectsOfType<GridObject>();
             foreach(GridObject obj in gridObjs)
@@ -43,12 +44,18 @@ namespace CustomGrid
         // Update is called once per frame
         void Update()
         {
-        
+            
+        }
+
+        private void FixedUpdate()
+        {
+            //Debug.Log(currentIndex);
         }
 
         private void OnDisable()
         {
             EventManager.Instance.FinishAction.RemoveListener(OnFinishAction);
+            EventManager.Instance.EnemyDied.RemoveListener(OnEnemyDied);
         }
 
         public void AddActor(GridObject obj)
@@ -65,8 +72,8 @@ namespace CustomGrid
 
         public void OnFinishAction(GridObject obj)
         {
-
             DebugF.Log(obj.ToString());
+
 
             // if player
             if (currentIndex == -1)
@@ -95,6 +102,11 @@ namespace CustomGrid
                 EventManager.Instance.CallNextActor(actors[currentIndex]);
                 currentIndex++;
             }
+        }
+
+        public void OnEnemyDied(GridObject obj)
+        {
+            RemoveActor(obj);
         }
 
 

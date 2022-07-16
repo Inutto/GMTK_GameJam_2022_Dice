@@ -31,6 +31,7 @@ namespace CustomGrid
             }
 
             EventManager.Instance.FinishAction.AddListener(OnActionFinish);
+            EventManager.Instance.EnemyDied.AddListener(OnEnemyDied);
         }
 
         //public GridManager(Vector2Int dimensions)
@@ -68,6 +69,11 @@ namespace CustomGrid
         public void OnActionFinish(GridObject obj)
         {
             UpdateGrid();
+        }
+
+        public void OnEnemyDied(GridObject obj)
+        {
+            RemoveObject(obj);
         }
 
         /// <summary>

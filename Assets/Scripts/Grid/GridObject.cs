@@ -24,18 +24,18 @@ namespace CustomGrid
 
 
         [Header("Movement")]
-        [SerializeField] float speed;
-        [SerializeField] float moveDuration;
+        [SerializeField, Range(1, 10)] float rotateSpeed = 5f;
+        [SerializeField, Range(0.1f, 2)] float moveDuration = 0.2f;
 
         [SerializeField] bool canMove = true;
 
         [Header("Health")]
-        [SerializeField] int health;
+        [SerializeField] protected int health;
 
         
 
 
-        public Vector2Int GridPosition { get; private set; }
+        public Vector2Int GridPosition { get; protected set; }
 
         protected bool _isMoving;
         protected Tweener _moveTweener;
@@ -48,9 +48,10 @@ namespace CustomGrid
             
         }
 
-        private void Start()
+        protected void Start()
         {
             EventManager.Instance.NextActor.AddListener(OnNextActor);
+            EventManager.Instance.InflictDamage.AddListener(OnTakeDamage);
         }
 
 
@@ -62,34 +63,39 @@ namespace CustomGrid
         private void OnDisable()
         {
             EventManager.Instance.NextActor.RemoveListener(OnNextActor);
+            EventManager.Instance.InflictDamage.RemoveListener(OnTakeDamage);
         }
+
+        #region Encapsuled Actions
 
         protected void MoveAndRollOne(Vector2Int delta)
         {
+            GridPosition += delta;
+
             if(delta.x != 0)
             {
                 var anchor = transform.position + new Vector3(delta.x > 0 ? 0.5f : -0.5f, 0, 0.5f);
                 var axis = Vector3.Cross(Vector3.back, delta.x > 0 ? Vector3.right : Vector3.left);
-                StartCoroutine(Roll(anchor, axis));
+                StartCoroutine(Roll(anchor, axis, true));
             }
             else if(delta.y != 0)
             {
                 var anchor = transform.position + new Vector3(0, delta.y > 0 ? 0.5f : -0.5f, 0.5f);
                 var axis = Vector3.Cross(Vector3.back, delta.y > 0 ? Vector3.up : Vector3.down);
-                StartCoroutine(Roll(anchor, axis));
+                StartCoroutine(Roll(anchor, axis, true));
             }
         }
 
-        protected virtual bool TryMoveOnGrid(Vector2Int delta)
+        protected void KnockBack(Vector2Int delta)
         {
-            if (!canMove) return false;
-            
-            var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var obj);
-            if(msg != TryGetObjMsg.FLOOR) return false;
-
             GridPosition += delta;
-            return true;
+
+            Move(delta, false);
         }
+
+        #endregion
+
+        #region EventListeners
 
         /// <summary>
         /// If obj is me then its my turn, do some shit.
@@ -107,10 +113,70 @@ namespace CustomGrid
             }
         }
 
-        protected virtual void ActionFinish()
+        /// <summary>
+        /// called when InflictDamage event is invoked
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <param name="damage"></param>
+        protected virtual void OnTakeDamage(GridObject source, GridObject target, int damage)
         {
-            EventManager.Instance.CallFinishAction(this);
+            if (target != this) return;
         }
+
+        #endregion
+
+        #region BasicActions
+
+        IEnumerator Roll(Vector3 anchor, Vector3 axis, bool callFinish)
+        {
+            _isMoving = true;
+
+            for(int i = 0; i < (90f / rotateSpeed); i++)
+            {
+                transform.RotateAround(anchor, axis, rotateSpeed);
+                yield return new WaitForSeconds(0.01f);
+            }
+
+            transform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), Mathf.Round(transform.position.z));
+            _isMoving = false;
+
+            // TEST: rotate dice
+            DiceAttributeBehavior diceAttribute;
+            if (TryGetComponent<DiceAttributeBehavior>(out diceAttribute))
+            {
+                diceAttribute.UpdateNum(axis);
+            }
+
+            // Combat calculation
+
+
+
+            if(callFinish) EventManager.Instance.CallFinishAction(this);
+            DebugF.Log("Finish Roll", this.gameObject);
+        }
+
+        void Move(Vector2Int delta, bool callFinish)
+        {
+            _isMoving = true;
+
+            transform.DOMove(
+                new Vector3(
+                        transform.position.x + delta.x,
+                        transform.position.y + delta.y,
+                        0
+                    ),
+                moveDuration).OnComplete
+                (() =>
+                    {
+                        _isMoving = false;
+                        if(callFinish) EventManager.Instance.CallFinishAction(this);
+                        DebugF.Log("Finish Move", this.gameObject);
+                    }
+                );
+        }
+
+        #endregion
 
         #region util
         // not sure if need this
@@ -130,51 +196,35 @@ namespace CustomGrid
             return new Vector2Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y));
         }
 
-        IEnumerator Roll(Vector3 anchor, Vector3 axis)
+        protected virtual bool TryMoveOnGrid(Vector2Int delta)
         {
-            _isMoving = true;
+            if (!canMove) return false;
 
-            for(int i = 0; i < (90f / speed); i++)
-            {
-                transform.RotateAround(anchor, axis, speed);
-                yield return new WaitForSeconds(0.01f);
-            }
+            var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var obj);
+            if (msg != TryGetObjMsg.FLOOR) return false;
 
-            transform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), Mathf.Round(transform.position.z));
-            _isMoving = false;
-
-            // TEST: rotate dice
-            DiceAttributeBehavior diceAttribute;
-            if (TryGetComponent<DiceAttributeBehavior>(out diceAttribute))
-            {
-                diceAttribute.UpdateNum(axis);
-            }
-
-            // Combat calculation
-
-
-            ActionFinish();
-            DebugF.Log("Finish Roll", this.gameObject);
+            // NOTICE: nolonger move GridPosition in this method.
+            // It's moved to Encapsulated Actions.
+            //GridPosition += delta;
+            return true;
         }
 
-
-
-
-
-
         #endregion
-
-
-
 
         #region health
 
         protected virtual void UpdateHealth(int delta)
         {
+            // just used to clamp health I guess, behavior in OnTakeDamage or OnHeal
+
             health += delta;
             if(health <= 0)
             {
-                // Death Event
+                health = 0;
+            }
+            else if(health > 6)
+            {
+                health = 6;
             }
         }
 

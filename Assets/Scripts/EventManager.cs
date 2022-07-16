@@ -11,7 +11,9 @@ public class EventManager : MonoSingleton<EventManager>
     #region events
     [SerializeField] public UnityEvent<GridObject> FinishAction;     // one actor finished their turn
     [SerializeField] public UnityEvent<GridObject> NextActor;        // next actor's turn
-    [SerializeField] public UnityEvent TurnFinished;     // turn finished, no more actors to act
+
+    [SerializeField] public UnityEvent<GridObject, GridObject, int> InflictDamage;
+    [SerializeField] public UnityEvent<GridObject> EnemyDied;        // call this when enemy dies
 
     #endregion
 
@@ -31,9 +33,16 @@ public class EventManager : MonoSingleton<EventManager>
         NextActor?.Invoke(obj);
     }
 
-    public void CallTurnFinished()
+    public void CallInflictDamage(GridObject source, GridObject target, int damage)
     {
-        TurnFinished?.Invoke();
+        DebugF.Log(source.ToString() + target.ToString() + damage);
+        InflictDamage?.Invoke(source, target, damage);
+    }
+
+    public void CallEnemyDied(GridObject obj)
+    {
+        DebugF.Log(obj.ToString());
+        EnemyDied?.Invoke(obj);
     }
 
     #endregion

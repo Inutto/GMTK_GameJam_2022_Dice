@@ -6,7 +6,7 @@ using System;
 
 public class DiceUIBehavior : MonoBehaviour
 {
-
+    // use TextMeshProUGUI type is the best practice...?
     public TextMeshProUGUI up;
     public TextMeshProUGUI down;
     public TextMeshProUGUI left;
@@ -24,9 +24,8 @@ public class DiceUIBehavior : MonoBehaviour
         back.text = nums[5].ToString();
     }
 
-    internal void UpdateNumDict(Dictionary<string, int> faceNums)
+    internal void UpdateNum(Dictionary<string, int> faceNums)
     {
-        Debug.Log("Updating text");
         up.text = faceNums["up"].ToString();
         down.text = faceNums["down"].ToString();
         left.text = faceNums["left"].ToString();

@@ -23,9 +23,9 @@ public class DiceAttributeBehavior : MonoBehaviour
 {
     Dictionary<string, int> faceNums = new Dictionary<string, int>();
 
-    // for serialization purpose, Dictionary.ToString() may not be
-    // predictable, but the order is correct for now. Use the Dict
-    // for rigid purposes
+    // nums is for serialization purpose only. Dictionary.ToString() may
+    // NOT be predictable, the order is only correct bcz my init order is correct.
+    // Use the Dict for rigid purposes.
     [SerializeField] List<int> nums = new List<int>();
 
     [SerializeField] DiceUIBehavior debugUI;
@@ -33,12 +33,17 @@ public class DiceAttributeBehavior : MonoBehaviour
     private void Start()
     {
         Init();
-        debugUI.UpdateNumDict(faceNums);
+        debugUI.UpdateNum(faceNums);
     }
 
     private void FixedUpdate()
     {
         nums = faceNums.Values.ToList();
+    }
+
+    public int GetFaceNum(string key)
+    {
+        return faceNums[key];
     }
 
     public void Init()
@@ -95,7 +100,7 @@ public class DiceAttributeBehavior : MonoBehaviour
             faceNums["down"] = temp;
         }
 
-        debugUI.UpdateNumDict(faceNums);
+        debugUI.UpdateNum(faceNums);
         
     }
 
