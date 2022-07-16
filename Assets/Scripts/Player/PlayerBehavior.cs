@@ -101,7 +101,7 @@ public class PlayerBehavior : GridObject
             DebugF.Log("Apply Damage Area");
             currentAreaList = damageAreaBehavior.GetDamageArea(0, delta);
             canDrawGizmos = true;
-            TimerF.DoThisAfterSeconds(1f, () => { canDrawGizmos = false; });
+            StartCoroutine(TimerF.DoThisAfterSeconds(2f, () => { canDrawGizmos = false; }));
         }
     }
 

@@ -1543,6 +1543,7 @@ GameObject:
   - component: {fileID: 996884575}
   - component: {fileID: 996884576}
   - component: {fileID: 996884577}
+  - component: {fileID: 996884578}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1618,6 +1619,25 @@ MonoBehaviour:
   right: {fileID: 1959818506}
   forward: {fileID: 743076154}
   back: {fileID: 1353613195}
+--- !u!114 &996884578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996884573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7458b905e1d8bc34d9b43c902e629983, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAreaCollection:
+  - {fileID: 11400000, guid: 20faa1bb55fb04640b9290f06ec9621e, type: 2}
+  - {fileID: 11400000, guid: 1697d093ecdd1114ea4501dceb1c2cf5, type: 2}
+  - {fileID: 11400000, guid: 1a83634bf0fe1174e878398eccfd23dd, type: 2}
+  - {fileID: 11400000, guid: 77d46e5667bc46542943a6c735846556, type: 2}
+  - {fileID: 11400000, guid: dc85539a3dc12f54fb42a46626afd340, type: 2}
+  - {fileID: 11400000, guid: 2fd85bbf943747844b7e7fc1926a302b, type: 2}
 --- !u!1 &1054504369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2558,7 +2578,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.1919386, y: 1}
+    m_SensorSize: {x: 1.7231789, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
