@@ -17,7 +17,9 @@ public class PlayerBehavior : GridObject
     [Header("Damage Area")]
     [SerializeField] List<Vector2Int> currentAreaList;
     [SerializeField] GameObject AreaVisualizer;
+    [SerializeField] GameObject MeeleVisualizer;
     List<GameObject> visualizers;
+    GameObject meeleVisualizer;
     bool canDrawGizmos = false;
 
 
@@ -114,10 +116,27 @@ public class PlayerBehavior : GridObject
                 visualizers.Add(Instantiate(AreaVisualizer));
             }
         }
-        var areas = _damageAreaBehavior.GetDamageArea(_dice.GetFaceNum(DeltaToDirString(delta)) - 1, delta);
-        for(int i = 0; i < areas.Count; i++)
+
+        if(meeleVisualizer == null)
         {
-            visualizers[i].transform.position = transform.position + new Vector3(areas[i].x, areas[i].y, -0.6f);
+            meeleVisualizer = Instantiate(MeeleVisualizer);
+        }
+
+        var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var obj);
+        if (msg == TryGetObjMsg.SUCCESS)
+        {
+            if(obj.Type == ObjectType.Enemy)
+            {
+                meeleVisualizer.transform.position = transform.position + new Vector3(delta.x, delta.y, -0.6f);
+            }
+        }
+        else
+        {
+            var areas = _damageAreaBehavior.GetDamageArea(_dice.GetFaceNum(DeltaToDirString(delta)) - 1, delta);
+            for (int i = 0; i < areas.Count; i++)
+            {
+                visualizers[i].transform.position = transform.position + new Vector3(areas[i].x, areas[i].y, -0.6f);
+            }
         }
     }
 
@@ -132,10 +151,17 @@ public class PlayerBehavior : GridObject
             }
         }
 
-        foreach(var vis in visualizers)
+        if (meeleVisualizer == null)
+        {
+            meeleVisualizer = Instantiate(MeeleVisualizer);
+        }
+
+        foreach (var vis in visualizers)
         {
             vis.transform.position = new Vector3(0, 0, -1000);
         }
+
+        meeleVisualizer.transform.position = new Vector3(0, 0, -1000);
     }
 
     void PlayerMove(Vector2Int delta)

@@ -1590,6 +1590,7 @@ MonoBehaviour:
   _damageAreaBehavior: {fileID: 996884578}
   currentAreaList: []
   AreaVisualizer: {fileID: 6827047206089366598, guid: ea561b09a8152794f905978aef5273e7, type: 3}
+  MeeleVisualizer: {fileID: 6827047206089366598, guid: bad0756745c99104aa4e885e7b734555, type: 3}
 --- !u!114 &996884576
 MonoBehaviour:
   m_ObjectHideFlags: 0
