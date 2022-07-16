@@ -16,7 +16,10 @@ public class PlayerBehavior : GridObject
 
     [Header("Damage Area")]
     [SerializeField] List<Vector2Int> currentAreaList;
+    [SerializeField] GameObject AreaVisualizer;
+    List<GameObject> visualizers;
     bool canDrawGizmos = false;
+
 
     private void Update()
     {
@@ -24,23 +27,24 @@ public class PlayerBehavior : GridObject
 
         if (!_isMoving)
         {
-            var hor = Input.GetAxis("Horizontal");
-            var ver = Input.GetAxis("Vertical");
-            Vector2Int delta = Vector2Int.zero;
-            if (hor != 0)
-            {
-                //delta = new Vector2Int(hor > 0 ? 1 : -1, 0);
-                delta = hor > 0? Vector2Int.right : Vector2Int.left;
-            }
-            else if (ver != 0)
-            {
-                //delta = new Vector2Int(0, ver > 0 ? 1 : -1);
-                delta = ver > 0 ? Vector2Int.up : Vector2Int.down;
-            }
+            var delta = GetCurrentInputDelta();
 
             // if no input return
-            if (delta == Vector2Int.zero) return;
+            if (delta == Vector2Int.zero)
+            {
+                ClearVisualizedArea();
+                return;
+            }
+            else
+            {
+                ClearVisualizedArea();
+                VisualizeAttackArea(delta);
+            }
 
+            // only execute when space is held down together with movement
+            if (!Input.GetKeyDown(KeyCode.Space)) return;
+
+            ClearVisualizedArea();
             var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var obj);
             switch (msg)
             {
@@ -79,6 +83,59 @@ public class PlayerBehavior : GridObject
     private void FixedUpdate()
     {
         
+    }
+
+    Vector2Int GetCurrentInputDelta()
+    {
+        var hor = Input.GetAxisRaw("Horizontal");
+        var ver = Input.GetAxisRaw("Vertical");
+        Vector2Int delta = Vector2Int.zero;
+        if (hor != 0)
+        {
+            //delta = new Vector2Int(hor > 0 ? 1 : -1, 0);
+            delta = hor > 0 ? Vector2Int.right : Vector2Int.left;
+        }
+        else if (ver != 0)
+        {
+            //delta = new Vector2Int(0, ver > 0 ? 1 : -1);
+            delta = ver > 0 ? Vector2Int.up : Vector2Int.down;
+        }
+
+        return delta;
+    }
+
+    void VisualizeAttackArea(Vector2Int delta)
+    {
+        if(visualizers == null)
+        {
+            visualizers = new();
+            for (int i = 0; i < 6; i++)
+            {
+                visualizers.Add(Instantiate(AreaVisualizer));
+            }
+        }
+        var areas = _damageAreaBehavior.GetDamageArea(_dice.GetFaceNum(DeltaToDirString(delta)) - 1, delta);
+        for(int i = 0; i < areas.Count; i++)
+        {
+            visualizers[i].transform.position = transform.position + new Vector3(areas[i].x, areas[i].y, -0.6f);
+        }
+    }
+
+    void ClearVisualizedArea()
+    {
+        if(visualizers == null)
+        {
+            visualizers = new();
+            for (int i = 0; i < 6; i++)
+            {
+                visualizers.Add(Instantiate(AreaVisualizer));
+            }
+        }
+
+        foreach(var vis in visualizers)
+        {
+            vis.transform.position = new Vector3(0, 0, -1000);
+        }
     }
 
     void PlayerMove(Vector2Int delta)

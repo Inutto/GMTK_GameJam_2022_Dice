@@ -1587,8 +1587,9 @@ MonoBehaviour:
   canMove: 1
   health: 0
   _dice: {fileID: 996884576}
-  _damageAreaBehavior: {fileID: 0}
+  _damageAreaBehavior: {fileID: 996884578}
   currentAreaList: []
+  AreaVisualizer: {fileID: 6827047206089366598, guid: ea561b09a8152794f905978aef5273e7, type: 3}
 --- !u!114 &996884576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1870,6 +1871,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actors: []
+  player: {fileID: 0}
 --- !u!114 &1187590893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2580,7 +2582,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7153615, y: 1}
+    m_SensorSize: {x: 1.6225071, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
