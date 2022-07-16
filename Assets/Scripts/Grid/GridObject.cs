@@ -185,7 +185,17 @@ namespace CustomGrid
 
         void EndTurn()
         {
-            TimerF.DoThisAfterSeconds(90f/rotateSpeed * 0.01f, () => { EventManager.Instance.CallFinishAction(this); });
+            DebugF.Log("End Turn");
+            
+            StartCoroutine(WaitForRollTime());
+        }
+
+        IEnumerator WaitForRollTime() {
+            
+         
+            yield return new WaitForSeconds((90f / rotateSpeed * 0.01f));
+            EventManager.Instance.CallFinishAction(this);
+
         }
 
         #endregion

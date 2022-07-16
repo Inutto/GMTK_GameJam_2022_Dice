@@ -23,8 +23,7 @@ public class EnemyBehavior : GridObject
                this.ToString().ToRichTextColor(Color.green));
 
 
-
-            // TO BE IMPL: DONT MOVE AND END THIS TURN
+            DoNothingEndTurn();
             return;
 
         }
