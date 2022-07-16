@@ -36,14 +36,14 @@ namespace CustomGrid
         {
             GridPosition = WorldToGridPos();
             
+            
+        }
+
+        private void Start()
+        {
             EventManager.Instance.NextActor.AddListener(OnNextActor);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            
-        }
 
         private void FixedUpdate()
         {
