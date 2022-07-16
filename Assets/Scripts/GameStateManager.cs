@@ -6,7 +6,14 @@ namespace CustomGrid
 {
     public class GameStateManager : MonoSingleton<GameStateManager>
     {
-        List<GridObject> actors;
+        // Remember to add all actor types here (exclude player)
+        readonly List<ObjectType> actorTypes = new()
+        {
+            ObjectType.Enemy,
+        };
+
+        List<GridObject> actors = new();
+        GridObject player;
 
         int currentIndex;
 
@@ -15,7 +22,23 @@ namespace CustomGrid
         {
             EventManager.Instance.FinishAction.AddListener(OnFinishAction);
 
+            var gridObjs = FindObjectsOfType<GridObject>();
+            foreach(GridObject obj in gridObjs)
+            {
+                if (actorTypes.Contains(obj.Type))
+                {
+                    actors.Add(obj);
+                }
 
+                if (obj.Type == ObjectType.Player)
+                {
+                    player = obj;
+                }
+            }
+
+            // TODO: Remove Later
+            currentIndex = -1;
+            EventManager.Instance.CallNextActor(player);
         }
 
         // Update is called once per frame
@@ -43,21 +66,27 @@ namespace CustomGrid
 
         void OnFinishAction(GridObject obj)
         {
-            if (actors[currentIndex] != obj)
+            if (currentIndex == -1)
             {
-                Debug.LogError("Grid Object: " + obj + "at index: " + actors.IndexOf(obj) + " finished, but is out of order. Current index is: " + currentIndex);
-                return;
+                EventManager.Instance.CallNextActor(player);
+                currentIndex++;
             }
+
+            //if (actors[currentIndex] != obj)
+            //{
+            //    Debug.LogError("Grid Object: " + obj + "at index: " + actors.IndexOf(obj) + " finished, but is out of order. Current index is: " + currentIndex);
+            //    return;
+            //}
             
             // if depleted all grid objects in this turn
             if (currentIndex == actors.Count)
             {
-                currentIndex = 0;
-                EventManager.Instance.CallTurnFinished();
+                currentIndex = -1;
+                //EventManager.Instance.CallTurnFinished();
             }
             else
             {
-                currentIndex += 1;
+                currentIndex++;
                 EventManager.Instance.CallNextActor(actors[currentIndex]);
             }
         }
