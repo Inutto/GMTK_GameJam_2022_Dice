@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6484554582567671218}
   - component: {fileID: 6569640841105787574}
   - component: {fileID: 6568501279494737758}
+  - component: {fileID: 4010590902661867072}
   m_Layer: 0
   m_Name: Puff_Death
   m_TagString: Untagged
@@ -4784,6 +4785,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &4010590902661867072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6478552368503966052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8d1a69d025bc3a448740e10659c6cbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  life: 1
 --- !u!1 &6478988609488699454
 GameObject:
   m_ObjectHideFlags: 0

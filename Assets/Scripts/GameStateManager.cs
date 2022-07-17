@@ -7,12 +7,10 @@ namespace CustomGrid
     public class GameStateManager : MonoSingleton<GameStateManager>
     {
         public float turnWaitTime;
-        bool isOkToGoNextTurn;
-        bool blockingTurn;
 
         public GameObject ParticlePrefab;
         public GameObject DeathParticlePrefab;
-        public float particleTime;
+        public float USELESS_DOES_NOTHING;
 
         // Remember to add all actor types here (exclude player)
         readonly List<ObjectType> actorTypes = new()
@@ -130,19 +128,21 @@ namespace CustomGrid
             {
                 par = Instantiate(ParticlePrefab);
                 par.transform.position = pos + new Vector3(area.x, area.y, 0);
-                StartCoroutine(TimerF.DoThisAfterSeconds(particleTime, () => { Destroy(par); }));
+                par.GetComponent<ParticleSelfDestruct>().life = USELESS_DOES_NOTHING;
+                //StartCoroutine(TimerF.DoThisAfterSeconds(particleTime, () => { Destroy(par); }));
             }
 
             par = Instantiate(ParticlePrefab);
             par.transform.position = pos;
-            StartCoroutine(TimerF.DoThisAfterSeconds(particleTime, () => { Destroy(par); }));
+            par.GetComponent<ParticleSelfDestruct>().life = USELESS_DOES_NOTHING;
+            //StartCoroutine(TimerF.DoThisAfterSeconds(particleTime, () => { Destroy(par); }));
         }
 
         public void DeathPuff(Vector3 pos)
         {
             var par = Instantiate(DeathParticlePrefab);
             par.transform.position = pos;
-            StartCoroutine(TimerF.DoThisAfterSeconds(particleTime, () => { Destroy(par); }));
+            par.GetComponent<ParticleSelfDestruct>().life = USELESS_DOES_NOTHING;
         }
 
         #region temp
