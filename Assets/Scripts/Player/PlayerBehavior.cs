@@ -36,6 +36,13 @@ public class PlayerBehavior : GridObject
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            LevelManager.Instance.RestartLevel();
+        }
+
+
+
         if (!isMyTurn) return;
 
         if (!_isMoving)

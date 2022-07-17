@@ -20,23 +20,42 @@ public class UINumSpawnManager : MonoSingleton<UINumSpawnManager>
     {
         EventManager.Instance.InflictDamage.AddListener(OnInflictDamage);
         EventManager.Instance.NextActor.AddListener(OnNextActor);
+        EventManager.Instance.EnemyDied.AddListener(OnEnemyDie);
     }
 
-    private void OnNextActor(GridObject obj)
-    {
-        if(obj.Type == ObjectType.Player)
-        {
-            // Hard ref, because its easier
-            var playerPos = GameStateManager.Instance.player.gameObject.transform.position;
-            var drawPos = playerPos + new Vector3(0, 0, -2);
-            DrawTextAtPosition(drawPos, "Your Turn!", Color.red, 0, Ease.OutSine);
-        }
-    }
+
 
     private void OnDisable()
     {
         EventManager.Instance.InflictDamage.RemoveListener(OnInflictDamage);
         EventManager.Instance.NextActor.RemoveListener(OnNextActor);
+        EventManager.Instance.EnemyDied.RemoveListener(OnEnemyDie);
+    }
+
+    private void OnNextActor(GridObject obj)
+    {
+        if (obj.Type == ObjectType.Player)
+        {
+
+            var targetPos = obj.gameObject.transform.position + new Vector3(0, -1, -2);
+            // Hard ref, because its easier
+            var message = "Your Turn!";
+            var color = Color.red;
+            DrawTextAtPosition(targetPos, message, color, 0, Ease.OutSine);
+        }
+
+    }
+
+    private void OnEnemyDie(GridObject obj, bool isSquashed, int fatalDmg)
+    {
+        if (isSquashed)
+        {
+            var targetPos = obj.gameObject.transform.position + new Vector3(0, 1, -2);
+            var message = "Squashed!";
+            var color = Color.blue;
+            DrawTextAtPosition(targetPos, message, color, 1.5f, Ease.OutBounce);
+        }
+        
     }
 
 
@@ -52,7 +71,7 @@ public class UINumSpawnManager : MonoSingleton<UINumSpawnManager>
         Color damageColor = Color.white;
         if(target.Type == ObjectType.Enemy)
         {
-            damageColor = Color.yellow;
+            damageColor = Color.blue;
         } else if(target.Type == ObjectType.Player)
         {
             damageColor = Color.red;
@@ -77,15 +96,23 @@ public class UINumSpawnManager : MonoSingleton<UINumSpawnManager>
         if(!newText.TryGetComponent<TMP_Text>(out var textComponent)) return;
 
 
+        // Set Fade
+        if (newText.TryGetComponent<FadeSelfUITextBehavior>(out var fadeComponent))
+        {
+            fadeComponent.StartFade();
+        }
+
         textComponent.text = content;
         textComponent.color = color; 
+        
+
         DebugF.Log("Spawned Text Content: " + content);
 
 
         var randomOffsetX = Random.Range(-randomAmount, randomAmount);
         var randomOffsetY = Random.Range(-randomAmount, randomAmount);
      
-
+        
 
         newText.transform.DOMove(
             new Vector3(
