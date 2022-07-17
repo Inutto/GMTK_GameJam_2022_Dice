@@ -489,6 +489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f50f7c833e68a574eb2f722889154ede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeDelay: 0
   fadeTime: 2
   startFade: 0
 --- !u!1 &157789854
@@ -760,7 +761,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Dice Game
+  m_text: Roller Dicer Squasher
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
@@ -787,8 +788,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 150
-  m_fontSizeBase: 150
+  m_fontSize: 100
+  m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1418,6 +1419,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxBuildIndex: 1
+  GameLoseMenu: {fileID: 0}
+  GameWinMenu: {fileID: 0}
 --- !u!1 &511111068
 GameObject:
   m_ObjectHideFlags: 0
@@ -2120,6 +2123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f50f7c833e68a574eb2f722889154ede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeDelay: 0
   fadeTime: 4
   startFade: 0
 --- !u!1 &690177438
@@ -3666,6 +3670,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthText: {fileID: 1499017645}
   healthFillImage: {fileID: 1118875936}
+  healthChargedImage: {fileID: 0}
 --- !u!1 &1160303295
 GameObject:
   m_ObjectHideFlags: 0
@@ -3832,6 +3837,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2be1f83302564040acc9c052b5013ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnWaitTime: 0
+  ParticlePrefab: {fileID: 0}
+  DeathParticlePrefab: {fileID: 0}
+  USELESS_DOES_NOTHING: 0
   actors: []
   player: {fileID: 0}
 --- !u!114 &1187590893
@@ -3859,6 +3868,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   PlayerDied:
+    m_PersistentCalls:
+      m_Calls: []
+  LevelClear:
     m_PersistentCalls:
       m_Calls: []
 --- !u!4 &1187590894
@@ -4472,6 +4484,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f50f7c833e68a574eb2f722889154ede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeDelay: 0
   fadeTime: 1.5
   startFade: 0
 --- !u!225 &1485537101
@@ -5952,7 +5965,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7788104, y: 1}
+    m_SensorSize: {x: 1.7771084, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -6502,7 +6515,12 @@ MonoBehaviour:
   moveDuration: 0.1
   canMove: 1
   health: 1
+  enemyAIType: 0
   currentAreaList: []
+  enemyUIPrefab: {fileID: 0}
+  enemyUIBehavior: {fileID: 0}
+  visualLastTime: 0.2
+  enemyVisualizerPrefab: {fileID: 0}
 --- !u!114 &2102650171
 MonoBehaviour:
   m_ObjectHideFlags: 0
