@@ -6,6 +6,11 @@ using CustomGrid;
 
 public class EnemyBehavior : GridObject
 {
+
+    [Header("Damage Area")]
+    [SerializeField] List<Vector2Int> currentAreaList;
+    bool canDrawGizmos = false;
+
     protected override void OnNextActor(GridObject obj)
     {
         if (obj != this) return;
@@ -15,13 +20,12 @@ public class EnemyBehavior : GridObject
         var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var temp);
         if(msg == TryGetObjMsg.FLOOR)
         {
-            MoveAndRollOne(delta, true);
+            MoveAndRollOne(delta, false);
+            DamageArea(delta);
         } else 
         {
-            DebugF.LogWarning("Pathfind failed: not valid next move :" +
-               delta.ToString().ToRichTextColor(Color.red) + " for GridObject: " +
-               this.ToString().ToRichTextColor(Color.green));
-
+            DebugF.Log("No Valid Input for direction " + delta.ToString().ToRichTextColor(Color.red) +
+                " , Stay Still as a result");
 
             DoNothingEndTurn();
             return;
@@ -78,9 +82,87 @@ public class EnemyBehavior : GridObject
         }
     }
 
+
+    void DamageArea(Vector2Int delta)
+    {
+        DamageAreaBehavior damageAreaBehavior;
+        if (TryGetComponent<DamageAreaBehavior>(out damageAreaBehavior))
+        {
+            currentAreaList = damageAreaBehavior.GetDamageArea(health - 1, delta);
+            canDrawGizmos = true;
+            StartCoroutine(TimerF.DoThisAfterSeconds(2f, () => { canDrawGizmos = false; }));
+        }
+
+        // add 0.1f in time just in case
+        StartCoroutine(TimerF.DoThisAfterSeconds(90f / rotateSpeed * 0.01f + 0.1f, () =>
+        {
+            // since we've already rolled, just get dmg from the face facing forward (down the board)
+            DamagePlayerInArea(currentAreaList, this.health - 1, true);
+        }));
+
+    }
+
+
+
+    void DamagePlayerInArea(List<Vector2Int> area, int dmg, bool callFinish)
+    {
+        GridObject target = TryGetPlayerInArea(area);
+        if(target != null)
+        {
+            // Fuck this player
+            EventManager.Instance.CallInflictDamage(this, target, dmg);
+            DebugF.Log("Damaging player " + target.name + " with damage " +
+                dmg.ToString().ToRichTextColor(Color.red));
+        } else
+        {
+            DebugF.Log("No Player in Area");
+        }
+
+        if (callFinish) EventManager.Instance.CallFinishAction(this);
+    }
+
+
+    GridObject TryGetPlayerInArea(List<Vector2Int> area)
+    {
+        GridObject obj;
+        foreach (var item in area)
+        {
+            var msg = GridManager.Instance.TryGetObjectAt(GridPosition + item, out obj);
+            if (msg == TryGetObjMsg.SUCCESS)
+            {
+                if (obj.Type == ObjectType.Player)
+                {
+                    DebugF.Log("Find Player");
+                    return obj;
+                }
+            }
+        }
+
+        DebugF.Log("Fail to find player for Object: "
+            + this.ToString().ToRichTextColor(Color.green));
+            
+        return null;
+    }
+
+
     void Die()
     {
 
     }
+
+    private void OnDrawGizmos()
+    {
+        if (!canDrawGizmos) return;
+
+        // TEmp
+        Gizmos.color = Color.green;
+        foreach (var point in currentAreaList)
+        {
+            var drawPos = transform.position + new Vector3(point.x, point.y, 0);
+            Gizmos.DrawSphere(drawPos, 0.4f);
+        }
+
+    }
+
 
 }
