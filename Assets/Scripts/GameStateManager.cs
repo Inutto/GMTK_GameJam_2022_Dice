@@ -36,6 +36,7 @@ namespace CustomGrid
                 {
                     actors.Add(obj);
                 }
+                actors.Sort();
 
                 if (obj.Type == ObjectType.Player)
                 {
@@ -67,6 +68,7 @@ namespace CustomGrid
         public void AddActor(GridObject obj)
         {
             actors.Add(obj);
+            actors.Sort();
         }
         public void RemoveActor(GridObject obj)
         {

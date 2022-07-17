@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 namespace CustomGrid
 {
@@ -13,7 +14,7 @@ namespace CustomGrid
         Player,
     }
 
-    public class GridObject : MonoBehaviour
+    public class GridObject : MonoBehaviour, IComparable<GridObject>
     {
         public ObjectType Type;
 
@@ -260,6 +261,11 @@ namespace CustomGrid
         }
 
         #endregion health
+
+        public int CompareTo(GridObject other)
+        {
+            return this.gameObject.name.CompareTo(other.gameObject.name);
+        }
     }
 }
 

@@ -94,6 +94,7 @@ namespace CustomGrid
 
         private void Start()
         {
+            GridData.Clear();
             var objects = FindObjectsOfType<GridObject>();
             foreach (var obj in objects)
             {

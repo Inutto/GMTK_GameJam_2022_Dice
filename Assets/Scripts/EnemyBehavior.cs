@@ -12,6 +12,7 @@ public class EnemyBehavior : GridObject
         FOLLOW,
         SIEGE, 
         WONDER,
+        IDLE,
     }
 
     
@@ -95,7 +96,9 @@ public class EnemyBehavior : GridObject
                     // Still Follow
                     return delta_wonder;
                 }
-                
+            case EnemyAIType.IDLE:
+                return Vector2Int.zero;
+
             default:
                 DebugF.LogWarning("No Valid AIType Selected: return (0, 0) as default");
                 return Vector2Int.zero;
@@ -240,13 +243,13 @@ public class EnemyBehavior : GridObject
                     {
                         EventManager.Instance.CallInflictDamage(this, obj, 1);
                     }
-                    EventManager.Instance.CallEnemyDied(this, true, health);
+                    EventManager.Instance.CallEnemyDied(this, true, health + damage);
                     // TODO: change this later
                     gameObject.SetActive(false);
                 }
                 else if (msgBehind == TryGetObjMsg.OUTOFBOUNDS)
                 {
-                    EventManager.Instance.CallEnemyDied(this, true, health);
+                    EventManager.Instance.CallEnemyDied(this, true, health + damage);
                     // TODO: change this later
                     gameObject.SetActive(false);
                 }

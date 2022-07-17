@@ -71,8 +71,8 @@ public class LevelManager : MonoSingleton<LevelManager>
 
     public void RestartLevel()
     {
-        var buildIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(buildIndex);
+        //var buildIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 
