@@ -7,6 +7,14 @@ using CustomGrid;
 public class EnemyBehavior : GridObject
 {
 
+    enum EnemyAIType
+    {
+        FOLLOW,
+        SIEGE, 
+        WONDER,
+    }
+
+
     [Header("Damage Area")]
     [SerializeField] List<Vector2Int> currentAreaList;
     bool canDrawGizmos = false;
@@ -15,6 +23,9 @@ public class EnemyBehavior : GridObject
     public GameObject enemyUIPrefab;
     public EnemyUIBehavior enemyUIBehavior;
 
+    /// <summary>
+    /// Init for enemyUI stuff
+    /// </summary>
     protected override void Start()
     {
         base.Start();
@@ -34,6 +45,17 @@ public class EnemyBehavior : GridObject
         enemyUIBehavior.health = health;
     }
 
+
+    /// <summary>
+    /// Get the next move direction of this enemy. 
+    /// CAUTION: this might be (0, 0)
+    /// </summary>
+    /// <returns></returns>
+    public Vector2Int GetNextMoveDelta()
+    {
+        // temp, but use this first
+        return GridManager.Instance.GenerateNextMove(this, GameStateManager.Instance.player);
+    }
 
 
 
@@ -173,8 +195,7 @@ public class EnemyBehavior : GridObject
 
     void Die()
     {
-        //Whatever you wanna do, keep this. I don't know why i need this because event not working
-        Destroy(enemyUIBehavior.gameObject);
+        
     }
 
     private void OnDrawGizmos()
