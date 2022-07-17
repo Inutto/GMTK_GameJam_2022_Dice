@@ -75,8 +75,14 @@ public class UINumSpawnManager : MonoSingleton<UINumSpawnManager>
         } else if(target.Type == ObjectType.Player)
         {
             damageColor = Color.red;
+
+            // For Player: Spawn special UI at special location
+            //var specialPos = new Vector3(targetPos.x - 3, targetPos.y - 1.5f, textHeightInit);
+            //DrawTextAtPosition(specialPos, damageNumText, damageColor, horizontalRandomRange, Ease.OutSine);
+
         }
 
+        // For all damage: spawn at dmg location
         DrawTextAtPosition(damagePos, damageNumText, damageColor, horizontalRandomRange, Ease.OutBounce);
 
 
@@ -96,7 +102,7 @@ public class UINumSpawnManager : MonoSingleton<UINumSpawnManager>
         if(!newText.TryGetComponent<TMP_Text>(out var textComponent)) return;
 
 
-        // Set Fade
+        // If has fader, Set Fade
         if (newText.TryGetComponent<FadeSelfUITextBehavior>(out var fadeComponent))
         {
             fadeComponent.StartFade();
@@ -106,7 +112,7 @@ public class UINumSpawnManager : MonoSingleton<UINumSpawnManager>
         textComponent.color = color; 
         
 
-        DebugF.Log("Spawned Text Content: " + content);
+        DebugF.Log("Spawned Text Content: " + content + "at Position:" + worldPosition);
 
 
         var randomOffsetX = Random.Range(-randomAmount, randomAmount);

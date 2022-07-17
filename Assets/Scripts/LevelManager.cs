@@ -37,7 +37,7 @@ public class LevelManager : MonoSingleton<LevelManager>
 
     public void LoadNextLevelAfterSeconds(float time)
     {
-        TimerF.DoThisAfterSeconds(time, LoadNextLevel);
+        StartCoroutine(TimerF.DoThisAfterSeconds(time, LoadNextLevel));
     }
 
 

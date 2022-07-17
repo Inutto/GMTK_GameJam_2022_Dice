@@ -23,7 +23,7 @@ public class FadeSelfUITextBehavior : MonoBehaviour
         if (startFade)
         {
             _cs.alpha -= 1 / fadeTime * Time.deltaTime;
-            if (_cs.alpha <= 0) gameObject.SetActive(false);
+            if (_cs.alpha <= 0) Destroy(this.gameObject);
         }
        
     }
