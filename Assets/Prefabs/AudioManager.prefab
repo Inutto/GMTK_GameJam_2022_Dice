@@ -1085,4 +1085,4 @@ MonoBehaviour:
   BGM1: {fileID: 5260662311057670524}
   BGM2: {fileID: 5260662309322279749}
   dockBGMVolume: 0.1
-  notDockBGMVolume: 0.4
+  notDockBGMVolume: 0.25
