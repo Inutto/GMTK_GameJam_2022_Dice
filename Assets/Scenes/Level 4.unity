@@ -1093,7 +1093,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7768314, y: 1}
+    m_SensorSize: {x: 1.7767296, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2159,7 +2159,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: health
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: enemyAIType
@@ -9188,7 +9188,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7768314, y: 1}
+    m_SensorSize: {x: 1.7767296, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -9874,7 +9874,7 @@ MonoBehaviour:
     enemy grant you <color=blue>Over Shield</color> the amount of damage you did
     for 1 round.
 
-    Sometimes,  <color=blue>Over Shield</color> might be your <color=red>only
+    Sometimes, <color=blue>Over Shield</color> might be your <color=red>only
     chance.
 
 '
