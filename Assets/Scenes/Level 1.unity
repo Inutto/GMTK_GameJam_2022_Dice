@@ -20,13 +20,13 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.8207547, g: 0.6226357, b: 0.40650585, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_AmbientMode: 3
+  m_SubtractiveShadowColor: {r: 0.6600659, g: 0.7162238, b: 0.8584906, a: 1}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -37,8 +37,8 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_Sun: {fileID: 1853295354}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3522,6 +3522,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
+      propertyPath: enemyVisualizerPrefab
+      value: 
+      objectReference: {fileID: 6827047206089366598, guid: 2bfbda84942b4354493b4e9da3d1fa1b, type: 3}
     - target: {fileID: 2892673688385651690, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: m_Name
       value: Mob (1)
@@ -5683,6 +5687,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
+      propertyPath: enemyVisualizerPrefab
+      value: 
+      objectReference: {fileID: 6827047206089366598, guid: 2bfbda84942b4354493b4e9da3d1fa1b, type: 3}
     - target: {fileID: 2892673688385651690, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: m_Name
       value: Mob (2)
@@ -7245,6 +7253,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1929145877}
   - component: {fileID: 1929145878}
+  - component: {fileID: 1929145882}
+  - component: {fileID: 1929145881}
+  - component: {fileID: 1929145883}
   m_Layer: 0
   m_Name: PlayerFollowCam
   m_TagString: Untagged
@@ -7297,7 +7308,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7775229, y: 1}
+    m_SensorSize: {x: 1.7410296, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -7306,6 +7317,93 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 721922544}
+--- !u!114 &1929145881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929145876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad06e60d35a297149adcc16be5979131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pattern: {fileID: 2800000, guid: d0b63dfa3e7ff4543bd97f7ed95f091a, type: 3}
+  threshold: 0.45
+  strength: 0.45
+--- !u!20 &1929145882
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929145876}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!114 &1929145883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929145876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64f9144a767f6d842a42451779fca81c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colors:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0.11372549, g: 0.16862746, b: 0.3254902, a: 0}
+  - {r: 0.49411765, g: 0.14509805, b: 0.3254902, a: 0}
+  - {r: 0, g: 0.5294118, b: 0.31764707, a: 0}
+  - {r: 0.67058825, g: 0.32156864, b: 0.21176471, a: 0}
+  - {r: 0.37254903, g: 0.34117648, b: 0.30980393, a: 0}
+  - {r: 0.7607843, g: 0.7647059, b: 0.78039217, a: 0}
+  - {r: 1, g: 0.94509804, b: 0.9098039, a: 0}
+  - {r: 1, g: 0, b: 0.3019608, a: 0}
+  - {r: 1, g: 0.6392157, b: 0, a: 0}
+  - {r: 1, g: 0.9254902, b: 0.15294118, a: 0}
+  - {r: 0, g: 0.89411765, b: 0.21176471, a: 0}
+  - {r: 0.16078432, g: 0.6784314, b: 1, a: 0}
+  - {r: 0.5137255, g: 0.4627451, b: 0.6117647, a: 0}
+  - {r: 1, g: 0.46666667, b: 0.65882355, a: 0}
+  - {r: 1, g: 0.8, b: 0.6666667, a: 0}
 --- !u!1 &1948390688
 GameObject:
   m_ObjectHideFlags: 0
@@ -8308,6 +8406,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
+      propertyPath: enemyVisualizerPrefab
+      value: 
+      objectReference: {fileID: 6827047206089366598, guid: 2bfbda84942b4354493b4e9da3d1fa1b, type: 3}
     - target: {fileID: 2892673688385651690, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: m_Name
       value: Mob
