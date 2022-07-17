@@ -36,6 +36,7 @@ public class LevelManager : MonoSingleton<LevelManager>
 
         DebugF.Log("Display Win");
 
+        AudioManager.Instance.OnWin();
         // TEST: we should test this
         GameWinMenu.SetActive(true);
     }
@@ -46,6 +47,7 @@ public class LevelManager : MonoSingleton<LevelManager>
 
         DebugF.Log("Display Player Dead");
 
+        AudioManager.Instance.OnLose();
         // TEST: we should test this
         GameLoseMenu.SetActive(true);
 

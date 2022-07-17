@@ -71,6 +71,18 @@ namespace CustomGrid
 
         protected void MoveAndRollOne(Vector2Int delta, bool callFinish)
         {
+
+            // audio
+            if(Type == ObjectType.Enemy)
+            {
+                AudioManager.Instance.OnEnemyMove();
+            } else if (Type == ObjectType.Player)
+            {
+                AudioManager.Instance.OnPlayerMove();
+            }
+
+
+
             GridPosition += delta;
 
             if(delta.x != 0)
@@ -238,6 +250,10 @@ namespace CustomGrid
         protected virtual void UpdateHealth(int delta)
         {
             // just used to clamp health I guess, behavior in OnTakeDamage or OnHeal
+
+
+
+
 
             health += delta;
             if(health <= 0)
