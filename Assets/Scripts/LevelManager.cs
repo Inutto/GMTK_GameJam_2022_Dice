@@ -10,6 +10,7 @@ public class LevelManager : MonoSingleton<LevelManager>
 
 
     [SerializeField] int maxBuildIndex;
+    public GameObject GameLoseMenu;
 
     private void Start()
     {
@@ -31,6 +32,10 @@ public class LevelManager : MonoSingleton<LevelManager>
 
         DebugF.Log("Display Player Dead");
 
+        // TEST: we should test this
+        GameLoseMenu.SetActive(true);
+
+        
 
     }
 
