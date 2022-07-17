@@ -7,7 +7,7 @@ using TMPro;
 
 using CustomGrid;
 
-public class UINumSpawnManager : MonoSingleton<UINumSpawnManager>
+public class WorldLayoutUISpawnManager : MonoSingleton<WorldLayoutUISpawnManager>
 {
 
 

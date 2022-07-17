@@ -52,5 +52,7 @@ public class EventManager : MonoSingleton<EventManager>
         PlayerDied?.Invoke(killer);
     }
 
+
+
     #endregion
 }

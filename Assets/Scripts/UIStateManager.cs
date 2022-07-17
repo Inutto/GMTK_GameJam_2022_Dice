@@ -11,6 +11,7 @@ public class UIStateManager : MonoSingleton<UIStateManager>
     // Manually set them.
     public TMP_Text healthText;
     public Image healthFillImage;
+    public Image healthChargedImage; // when health > 6 show this
 
 
     private void Update()
@@ -27,7 +28,13 @@ public class UIStateManager : MonoSingleton<UIStateManager>
             healthText.text =  currentHealth.ToString();
             healthFillImage.fillAmount = ratio;
 
-
+            if(currentHealth > 6)
+            {
+                healthChargedImage.gameObject.SetActive(true);
+            } else
+            {
+                healthChargedImage.gameObject.SetActive(false);
+            }
 
 
         } else

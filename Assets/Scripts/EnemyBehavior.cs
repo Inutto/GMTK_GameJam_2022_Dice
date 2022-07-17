@@ -11,6 +11,32 @@ public class EnemyBehavior : GridObject
     [SerializeField] List<Vector2Int> currentAreaList;
     bool canDrawGizmos = false;
 
+    [Header("UI Update")]
+    public GameObject enemyUIPrefab;
+    public EnemyUIBehavior enemyUIBehavior;
+
+    protected override void Start()
+    {
+        base.Start();
+
+        // Spawn the UI under World Layout transform
+        var newUIObject = Instantiate(enemyUIPrefab,
+            transform.position,
+            transform.rotation,
+            WorldLayoutUISpawnManager.Instance.gameObject.transform);
+
+        enemyUIBehavior = newUIObject.GetComponent<EnemyUIBehavior>();
+        enemyUIBehavior.enemyObj = gameObject;
+    }
+
+    private void Update()
+    {
+        enemyUIBehavior.health = health;
+    }
+
+
+
+
     protected override void OnNextActor(GridObject obj)
     {
         if (obj != this) return;
@@ -147,7 +173,8 @@ public class EnemyBehavior : GridObject
 
     void Die()
     {
-
+        //Whatever you wanna do, keep this. I don't know why i need this because event not working
+        Destroy(enemyUIBehavior.gameObject);
     }
 
     private void OnDrawGizmos()
