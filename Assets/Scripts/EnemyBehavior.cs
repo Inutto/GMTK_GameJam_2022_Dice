@@ -72,17 +72,17 @@ public class EnemyBehavior : GridObject
         if (health == 0)
         {
             Vector2Int delta = GridPosition - source.GridPosition;
-            EventManager.Instance.CallEnemyDied(this, delta.magnitude == 1, damage - overDamage);
+            EventManager.Instance.CallEnemyDied(this, delta.magnitude == 0, damage - overDamage);
             // TODO: change this later
             gameObject.SetActive(false);
         }
         else
         {
-            // since InflictDamage is invoked before player move, delta length should be 1 when player
+            // since InflictDamage is invoked AFTER player move, delta length should be 0 when player
             // crashes enemy, but longer when player is area attacking
             Vector2Int delta = GridPosition - source.GridPosition;
             var msgBehind = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var obj);
-            if(delta.magnitude == 1)    // only knockback when player crash enemy
+            if(delta.magnitude == 0)    // only knockback when player crash enemy
             {
                 if (msgBehind == TryGetObjMsg.FLOOR)
                 {

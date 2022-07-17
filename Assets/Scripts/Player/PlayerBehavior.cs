@@ -86,7 +86,7 @@ public class PlayerBehavior : GridObject
                             break;
                         case ObjectType.Enemy:
                             SetHealth(_dice.GetFaceNum(DeltaToDirString(-delta)));
-                            AttackTarget(obj, delta);
+                            StartCoroutine(AttackTargetDelay(obj, delta));
                             PlayerMove(delta, false);
                             isMyTurn = false;
                             break;
@@ -231,8 +231,9 @@ public class PlayerBehavior : GridObject
         }
     }
 
-    void AttackTarget(GridObject obj, Vector2Int delta)
+    IEnumerator AttackTargetDelay(GridObject obj, Vector2Int delta)
     {
+        yield return new WaitForSeconds(0.1f);
         var dmg = _dice.GetFaceNum(DeltaToDirString(delta));
         EventManager.Instance.CallInflictDamage(this, obj, dmg);
     }
