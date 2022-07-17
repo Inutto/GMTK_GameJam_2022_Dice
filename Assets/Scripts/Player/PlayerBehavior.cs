@@ -118,7 +118,7 @@ public class PlayerBehavior : GridObject
         if (target != this) return;
 
         UpdateHealth(-damage);
-        if(health == 0)
+        if(health <= 0)
         {
             EventManager.Instance.CallPlayerDied(source);
         }
@@ -131,6 +131,7 @@ public class PlayerBehavior : GridObject
     protected override void UpdateHealth(int delta)
     {
         health += delta;
+        if (health <= 0) health = 0;
     }
 
     protected override void SetHealth(int value)
