@@ -48,7 +48,7 @@ namespace CustomGrid
             
         }
 
-        protected void Start()
+        protected virtual void Start()
         {
             EventManager.Instance.NextActor.AddListener(OnNextActor);
             EventManager.Instance.InflictDamage.AddListener(OnTakeDamage);
@@ -60,7 +60,7 @@ namespace CustomGrid
 
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             EventManager.Instance.NextActor.RemoveListener(OnNextActor);
             EventManager.Instance.InflictDamage.RemoveListener(OnTakeDamage);
@@ -157,8 +157,6 @@ namespace CustomGrid
 
             // Combat calculation
 
-
-
             if(callFinish) EventManager.Instance.CallFinishAction(this);
             DebugF.Log("Finish Roll", this.gameObject);
         }
@@ -250,6 +248,16 @@ namespace CustomGrid
             }
         }
 
+        protected virtual void SetHealth(int value)
+        {
+            health = value;
+            Mathf.Clamp(health, 0, 6);
+        }
+
+        public int GetHealth()
+        {
+            return health;
+        }
 
         #endregion health
     }

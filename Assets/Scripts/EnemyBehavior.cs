@@ -36,11 +36,13 @@ public class EnemyBehavior : GridObject
     protected override void OnTakeDamage(GridObject source, GridObject target, int damage)
     {
         if (target != this) return;
+        int overDamage = damage - health;
 
         UpdateHealth(-damage);
         if (health == 0)
         {
-            EventManager.Instance.CallEnemyDied(this);
+            Vector2Int delta = GridPosition - source.GridPosition;
+            EventManager.Instance.CallEnemyDied(this, delta.magnitude == 1, damage - overDamage);
             // TODO: change this later
             gameObject.SetActive(false);
         }
@@ -62,13 +64,13 @@ public class EnemyBehavior : GridObject
                     {
                         EventManager.Instance.CallInflictDamage(this, obj, 1);
                     }
-                    EventManager.Instance.CallEnemyDied(this);
+                    EventManager.Instance.CallEnemyDied(this, true, health);
                     // TODO: change this later
                     gameObject.SetActive(false);
                 }
                 else if (msgBehind == TryGetObjMsg.OUTOFBOUNDS)
                 {
-                    EventManager.Instance.CallEnemyDied(this);
+                    EventManager.Instance.CallEnemyDied(this, true, health);
                     // TODO: change this later
                     gameObject.SetActive(false);
                 }

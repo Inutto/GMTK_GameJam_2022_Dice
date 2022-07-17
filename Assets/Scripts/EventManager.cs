@@ -13,8 +13,9 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] public UnityEvent<GridObject> NextActor;        // next actor's turn
 
     [SerializeField] public UnityEvent<GridObject, GridObject, int> InflictDamage;
-    [SerializeField] public UnityEvent<GridObject> EnemyDied;        // call this when enemy dies
+    [SerializeField] public UnityEvent<GridObject, bool, int> EnemyDied;        // call this when enemy dies
 
+    [SerializeField] public UnityEvent<GridObject> PlayerDied;
     #endregion
 
 
@@ -39,10 +40,16 @@ public class EventManager : MonoSingleton<EventManager>
         InflictDamage?.Invoke(source, target, damage);
     }
 
-    public void CallEnemyDied(GridObject obj)
+    public void CallEnemyDied(GridObject obj, bool isSquashed, int fatalDmg)
     {
-        DebugF.Log(obj.ToString());
-        EnemyDied?.Invoke(obj);
+        DebugF.Log(obj.ToString() + "died of " + (isSquashed? "meele":"ranged"));
+        EnemyDied?.Invoke(obj, isSquashed, fatalDmg);
+    }
+
+    public void CallPlayerDied(GridObject killer)
+    {
+        DebugF.Log(killer.ToString());
+        PlayerDied?.Invoke(killer);
     }
 
     #endregion

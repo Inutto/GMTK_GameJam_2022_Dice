@@ -142,7 +142,7 @@ namespace CustomGrid
             UpdateGrid();
         }
 
-        public void OnEnemyDied(GridObject obj)
+        public void OnEnemyDied(GridObject obj, bool isSquashed, int dmg)
         {
             RemoveObject(obj);
         }

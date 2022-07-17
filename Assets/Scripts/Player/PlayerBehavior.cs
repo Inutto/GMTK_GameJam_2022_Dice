@@ -22,6 +22,17 @@ public class PlayerBehavior : GridObject
     GameObject meeleVisualizer;
     bool canDrawGizmos = false;
 
+    protected override void Start()
+    {
+        base.Start();
+        EventManager.Instance.EnemyDied.AddListener(OnEnemyDied);
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        EventManager.Instance.EnemyDied.RemoveListener(OnEnemyDied);
+    }
 
     private void Update()
     {
@@ -51,7 +62,10 @@ public class PlayerBehavior : GridObject
             switch (msg)
             {
                 case TryGetObjMsg.FLOOR:
-                    PlayerMove(delta);
+                    // since dice numbers are updated when the round ends,
+                    // set health as which ever face will be up
+                    SetHealth(_dice.GetFaceNum(DeltaToDirString(-delta)));
+                    PlayerMove(delta, true);
                     isMyTurn = false;
                     break;
                 case TryGetObjMsg.OUTOFBOUNDS:
@@ -64,8 +78,9 @@ public class PlayerBehavior : GridObject
                         case ObjectType.Pit:
                             break;
                         case ObjectType.Enemy:
+                            SetHealth(_dice.GetFaceNum(DeltaToDirString(-delta)));
                             AttackTarget(obj, delta);
-                            PlayerMove(delta);
+                            PlayerMove(delta, false);
                             isMyTurn = false;
                             break;
                         case ObjectType.Player:
@@ -82,9 +97,38 @@ public class PlayerBehavior : GridObject
         }
     }
 
-    private void FixedUpdate()
+    void OnEnemyDied(GridObject obj, bool isSquashed, int dmg)
     {
-        
+        if (isSquashed)
+        {
+            DebugF.Log("Over Shield");
+            UpdateHealth(dmg);
+        }
+    }
+
+    protected override void OnTakeDamage(GridObject source, GridObject target, int damage)
+    {
+        if (target != this) return;
+
+        UpdateHealth(-damage);
+        if(health == 0)
+        {
+            EventManager.Instance.CallPlayerDied(source);
+        }
+        else
+        {
+            // Do something here?
+        }
+    }
+
+    protected override void UpdateHealth(int delta)
+    {
+        health += delta;
+    }
+
+    protected override void SetHealth(int value)
+    {
+        health = value;
     }
 
     Vector2Int GetCurrentInputDelta()
@@ -164,17 +208,24 @@ public class PlayerBehavior : GridObject
         meeleVisualizer.transform.position = new Vector3(0, 0, -1000);
     }
 
-    void PlayerMove(Vector2Int delta)
+    void PlayerMove(Vector2Int delta, bool doAreaDamage)
     {
-        MoveAndRollOne(delta, false);
-        DebugF.Log("Ready to Damage");
-        DamageArea(delta);
+        if (doAreaDamage)
+        {
+            MoveAndRollOne(delta, false);
+            DebugF.Log("Ready to Damage");
+            DamageArea(delta);
+        }
+        else
+        {
+            MoveAndRollOne(delta, true);
+        }
     }
 
     void AttackTarget(GridObject obj, Vector2Int delta)
     {
-        EventManager.Instance.CallInflictDamage(this, obj, _dice.GetFaceNum(DeltaToDirString(delta)));
-
+        var dmg = _dice.GetFaceNum(DeltaToDirString(delta));
+        EventManager.Instance.CallInflictDamage(this, obj, dmg);
     }
 
     void DamageArea(Vector2Int delta)
