@@ -49,12 +49,12 @@ public class DiceAttributeBehavior : MonoBehaviour
     public void Init()
     {
 
-        faceNums.Add("up", 1);
-        faceNums.Add("down", 6);
-        faceNums.Add("left", 2);
-        faceNums.Add("right", 5);
-        faceNums.Add("forward", 3);
-        faceNums.Add("back", 4);
+        faceNums.Add("up", 2);
+        faceNums.Add("down", 5);
+        faceNums.Add("left", 3);
+        faceNums.Add("right", 4);
+        faceNums.Add("forward", 1);
+        faceNums.Add("back", 6);
 
     }
 
