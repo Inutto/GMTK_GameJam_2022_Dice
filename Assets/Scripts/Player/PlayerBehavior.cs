@@ -155,7 +155,7 @@ public class PlayerBehavior : GridObject
         if(visualizers == null)
         {
             visualizers = new();
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 7; i++)
             {
                 visualizers.Add(Instantiate(AreaVisualizer));
             }
@@ -179,8 +179,9 @@ public class PlayerBehavior : GridObject
             var areas = _damageAreaBehavior.GetDamageArea(_dice.GetFaceNum(DeltaToDirString(delta)) - 1, delta);
             for (int i = 0; i < areas.Count; i++)
             {
-                visualizers[i].transform.position = transform.position + new Vector3(areas[i].x, areas[i].y, -0.6f);
+                visualizers[i].transform.position = transform.position + new Vector3(areas[i].x + delta.x, areas[i].y + delta.y, -0.6f);
             }
+            meeleVisualizer.transform.position = transform.position + new Vector3(delta.x, delta.y, -0.6f);
         }
     }
 
@@ -189,7 +190,7 @@ public class PlayerBehavior : GridObject
         if(visualizers == null)
         {
             visualizers = new();
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 7; i++)
             {
                 visualizers.Add(Instantiate(AreaVisualizer));
             }
