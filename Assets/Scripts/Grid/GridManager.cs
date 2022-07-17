@@ -61,11 +61,7 @@ namespace CustomGrid
                 DebugF.LogError("Path Error. You idiot. I will return a up for subs");
                 return Vector2Int.zero;
             }
-            else if (path.Count == 1)
-            {
-                DebugF.LogWarning("Next path is target. I will not move in this case.");
-                return Vector2Int.zero;
-            }
+            
 
             var nextMove = path[0];
             var delta = new Vector2Int(

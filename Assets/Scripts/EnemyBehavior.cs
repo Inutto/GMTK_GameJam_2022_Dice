@@ -67,48 +67,33 @@ public class EnemyBehavior : GridObject
 
         switch (enemyAIType)
         {
+
+            // Directly Chase. If too close to player, run.
             case EnemyAIType.FOLLOW:
-                return GridManager.Instance.GenerateNextMove(this, player, out path);
+                var delta_follow =  GridManager.Instance.GenerateNextMove(this, player, out path);
+                if(path.Count == 1)
+                {
+                    return TryToFlee(delta_follow);
+                } else
+                {
+                    return delta_follow;
+                }
 
+            // Only find somewhere near player
             case EnemyAIType.SIEGE:
-                var offSet_1 = new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1));
-                return GridManager.Instance.GenerateNextMove(this.GridPosition, player.GridPosition + offSet_1, out path);
+                var offSet = new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1));
+                return GridManager.Instance.GenerateNextMove(this.GridPosition, player.GridPosition + offSet, out path);
 
+            // If too close to player, run. 
             case EnemyAIType.WONDER:
-                var delta = GridManager.Instance.GenerateNextMove(this, player, out path);
+                var delta_wonder = GridManager.Instance.GenerateNextMove(this, player, out path);
                 if (path.Count <= 3)
                 {
-                    // Away from player
-
-
-                    // Try opposite first: -delta
-                    var msg = GridManager.Instance.TryGetObjectAt(GridPosition - delta, out var temp);
-                    if (msg == TryGetObjMsg.FLOOR)
-                    {
-                        return -delta;
-                    }
-
-                    // If not, find all directions
-                    var directionArray = new Vector2Int[4] { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
-                    foreach(var direction in directionArray)
-                    {
-                        if (delta == direction) continue;
-
-                        var msg_2 = GridManager.Instance.TryGetObjectAt(GridPosition + direction, out var temp_2);
-                        if(msg_2 == TryGetObjMsg.FLOOR)
-                        {
-                            return direction;
-                        }
-                    }
-
-                    // no where to go
-                    DebugF.LogWarning("No where to go because everywhere is stuck, return (0, 0)");
-                    return Vector2Int.zero;
-
+                    return TryToFlee(delta_wonder);
                 } else
                 {
                     // Still Follow
-                    return delta;
+                    return delta_wonder;
                 }
                 
             default:
@@ -121,6 +106,38 @@ public class EnemyBehavior : GridObject
         
     }
 
+
+    /// <summary>
+    /// When player realize delta is a dangerous decision, find a way to run
+    /// </summary>
+    /// <param name="delta"></param>
+    /// <returns></returns>
+    Vector2Int TryToFlee(Vector2Int delta)
+    {
+        // Try opposite first: -delta
+        var msg = GridManager.Instance.TryGetObjectAt(GridPosition - delta, out var temp);
+        if (msg == TryGetObjMsg.FLOOR)
+        {
+            return -delta;
+        }
+
+        // If not, find all directions
+        var directionArray = new Vector2Int[4] { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+        foreach (var direction in directionArray)
+        {
+            if (delta == direction) continue;
+
+            var msg_2 = GridManager.Instance.TryGetObjectAt(GridPosition + direction, out var temp_2);
+            if (msg_2 == TryGetObjMsg.FLOOR)
+            {
+                return direction;
+            }
+        }
+
+        // no where to go
+        DebugF.LogWarning("No where to go because everywhere is stuck, return (0, 0)");
+        return Vector2Int.zero;
+    }
 
 
     protected override void OnNextActor(GridObject obj)
@@ -238,6 +255,9 @@ public class EnemyBehavior : GridObject
     }
 
 
+
+
+
     void DamageArea(Vector2Int delta)
     {
         DamageAreaBehavior damageAreaBehavior;
@@ -254,7 +274,7 @@ public class EnemyBehavior : GridObject
         {
             ClearDamageArea();
             // since we've already rolled, just get dmg from the face facing forward (down the board)
-            DamagePlayerInArea(currentAreaList, this.health - 1, true); 
+            DamagePlayerInArea(currentAreaList, this.health, true); 
         }));
 
     }
