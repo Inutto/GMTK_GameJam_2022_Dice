@@ -16,6 +16,8 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] public UnityEvent<GridObject, bool, int> EnemyDied;        // call this when enemy dies
 
     [SerializeField] public UnityEvent<GridObject> PlayerDied;
+
+    [SerializeField] public UnityEvent LevelClear;
     #endregion
 
 
@@ -50,6 +52,12 @@ public class EventManager : MonoSingleton<EventManager>
     {
         DebugF.Log(killer.ToString());
         PlayerDied?.Invoke(killer);
+    }
+
+    public void CallLevelClear()
+    {
+        DebugF.Log("Level Clear");
+        LevelClear?.Invoke();
     }
 
 

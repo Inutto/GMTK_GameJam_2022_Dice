@@ -107,8 +107,9 @@ namespace CustomGrid
         public void OnEnemyDied(GridObject obj, bool isSquashed, int dmg)
         {
             RemoveActor(obj);
+            if (actors.Count == 0)
+                EventManager.Instance.CallLevelClear();
         }
-
 
         #region temp
         void ResetIndexAndCallPlayer()
