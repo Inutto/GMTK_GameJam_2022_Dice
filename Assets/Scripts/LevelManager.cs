@@ -11,20 +11,34 @@ public class LevelManager : MonoSingleton<LevelManager>
 
     [SerializeField] int maxBuildIndex;
     public GameObject GameLoseMenu;
+    public GameObject GameWinMenu;
 
     private void Start()
     {
         EventManager.Instance.PlayerDied.AddListener(OnPlayerDead);
+        EventManager.Instance.LevelClear.AddListener(OnLevelClear);
 
     }
 
+ 
 
     private void OnDisable()
     {
         EventManager.Instance.PlayerDied.RemoveListener(OnPlayerDead);
+        EventManager.Instance.LevelClear.RemoveListener(OnLevelClear);
 
     }
 
+
+
+    private void OnLevelClear()
+    {
+
+        DebugF.Log("Display Win");
+
+        // TEST: we should test this
+        GameWinMenu.SetActive(true);
+    }
 
     private void OnPlayerDead(GridObject obj)
     {

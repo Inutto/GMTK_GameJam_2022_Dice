@@ -45,7 +45,35 @@ namespace CustomGrid
 
         }
 
+        public Vector2Int GenerateNextMove(Vector2Int startPosition, Vector2Int goalPosition, out List<Node> pathOutput)
+        {
 
+            UpdatePathfindingGridMap();
+
+            var path = AStar.Search(map,
+               map.Grid[startPosition.x, startPosition.y],
+               map.Grid[goalPosition.x, goalPosition.y]);
+
+            pathOutput = path;
+
+            if (path == null || path.Count < 1)
+            {
+                DebugF.LogError("Path Error. You idiot. I will return a up for subs");
+                return Vector2Int.zero;
+            }
+            else if (path.Count == 1)
+            {
+                DebugF.LogWarning("Next path is target. I will not move in this case.");
+                return Vector2Int.zero;
+            }
+
+            var nextMove = path[0];
+            var delta = new Vector2Int(
+                    (int)nextMove.Position.x - startPosition.x,
+                    (int)nextMove.Position.y - startPosition.y);
+
+            return delta;
+        }
 
         /// <summary>
         /// Generate the next direction (delta) for the start obj if he wants to fuck the goal
@@ -54,36 +82,16 @@ namespace CustomGrid
         /// <param name="start"></param>
         /// <param name="goal"></param>
         /// <returns></returns>
-        public Vector2Int GenerateNextMove(GridObject start, GridObject goal)
+        public Vector2Int GenerateNextMove(GridObject start, GridObject goal, out List<Node> pathOutput)
         {
 
             UpdatePathfindingGridMap();
 
-            Vector2 startPosition = start.GridPosition;
-            Vector2 goalPosition = goal.GridPosition;
+            Vector2Int startPosition = start.GridPosition;
+            Vector2Int goalPosition = goal.GridPosition;
 
-            var path = AStar.Search(map,
-                map.Grid[start.GridPosition.x, start.GridPosition.y],
-                map.Grid[goal.GridPosition.x, goal.GridPosition.y]);
+            return GenerateNextMove(startPosition, goalPosition, out pathOutput);
 
-
-            if(path == null || path.Count < 1)
-            {
-                DebugF.LogError("Path Error. You idiot. I will return a up for subs");
-                return Vector2Int.zero;
-            } else if(path.Count == 1)
-            {
-                DebugF.LogWarning("Next path is target. I will not move in this case.");
-                return Vector2Int.zero;
-            }
-
-            var nextMove = path[0];
-            var delta = new Vector2Int(
-                    (int)nextMove.Position.x - start.GridPosition.x,
-                    (int)nextMove.Position.y - start.GridPosition.y);
-
-            return delta;
-            
         }
 
 

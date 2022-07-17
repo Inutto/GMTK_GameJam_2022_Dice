@@ -7,13 +7,17 @@ using CustomGrid;
 public class EnemyBehavior : GridObject
 {
 
-    enum EnemyAIType
+    public enum EnemyAIType
     {
         FOLLOW,
         SIEGE, 
         WONDER,
     }
 
+    
+
+    [Header("AI Type")]
+    public EnemyAIType enemyAIType = EnemyAIType.FOLLOW;
 
     [Header("Damage Area")]
     [SerializeField] List<Vector2Int> currentAreaList;
@@ -58,8 +62,63 @@ public class EnemyBehavior : GridObject
     /// <returns></returns>
     public Vector2Int GetNextMoveDelta()
     {
+        var player = GameStateManager.Instance.player;
+        List<Node> path = new List<Node>();
+
+        switch (enemyAIType)
+        {
+            case EnemyAIType.FOLLOW:
+                return GridManager.Instance.GenerateNextMove(this, player, out path);
+
+            case EnemyAIType.SIEGE:
+                var offSet_1 = new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1));
+                return GridManager.Instance.GenerateNextMove(this.GridPosition, player.GridPosition + offSet_1, out path);
+
+            case EnemyAIType.WONDER:
+                var delta = GridManager.Instance.GenerateNextMove(this, player, out path);
+                if (path.Count <= 3)
+                {
+                    // Away from player
+
+
+                    // Try opposite first: -delta
+                    var msg = GridManager.Instance.TryGetObjectAt(GridPosition - delta, out var temp);
+                    if (msg == TryGetObjMsg.FLOOR)
+                    {
+                        return -delta;
+                    }
+
+                    // If not, find all directions
+                    var directionArray = new Vector2Int[4] { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+                    foreach(var direction in directionArray)
+                    {
+                        if (delta == direction) continue;
+
+                        var msg_2 = GridManager.Instance.TryGetObjectAt(GridPosition + direction, out var temp_2);
+                        if(msg_2 == TryGetObjMsg.FLOOR)
+                        {
+                            return direction;
+                        }
+                    }
+
+                    // no where to go
+                    DebugF.LogWarning("No where to go because everywhere is stuck, return (0, 0)");
+                    return Vector2Int.zero;
+
+                } else
+                {
+                    // Still Follow
+                    return delta;
+                }
+                
+            default:
+                DebugF.LogWarning("No Valid AIType Selected: return (0, 0) as default");
+                return Vector2Int.zero;
+
+        }
+
         // temp, but use this first
-        return GridManager.Instance.GenerateNextMove(this, GameStateManager.Instance.player);
+        
     }
 
 
@@ -69,7 +128,7 @@ public class EnemyBehavior : GridObject
         if (obj != this) return;
 
         // Use pathfinder
-        var delta = GridManager.Instance.GenerateNextMove(this, GameStateManager.Instance.player);
+        var delta = GetNextMoveDelta();
         var msg = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var temp);
         if(msg == TryGetObjMsg.FLOOR)
         {
