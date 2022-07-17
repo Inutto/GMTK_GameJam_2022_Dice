@@ -6,6 +6,10 @@ namespace CustomGrid
 {
     public class GameStateManager : MonoSingleton<GameStateManager>
     {
+        public GameObject ParticlePrefab;
+        public GameObject DeathParticlePrefab;
+        public float particleTime;
+
         // Remember to add all actor types here (exclude player)
         readonly List<ObjectType> actorTypes = new()
         {
@@ -106,9 +110,32 @@ namespace CustomGrid
 
         public void OnEnemyDied(GridObject obj, bool isSquashed, int dmg)
         {
+            DeathPuff(obj.transform.position);
             RemoveActor(obj);
             if (actors.Count == 0)
                 EventManager.Instance.CallLevelClear();
+        }
+
+        public void Puff(Vector3 pos, List<Vector2Int> currentAreaList)
+        {
+            GameObject par;
+            foreach (var area in currentAreaList)
+            {
+                par = Instantiate(ParticlePrefab);
+                par.transform.position = pos + new Vector3(area.x, area.y, 0);
+                StartCoroutine(TimerF.DoThisAfterSeconds(particleTime, () => { Destroy(par); }));
+            }
+
+            par = Instantiate(ParticlePrefab);
+            par.transform.position = pos;
+            StartCoroutine(TimerF.DoThisAfterSeconds(particleTime, () => { Destroy(par); }));
+        }
+
+        public void DeathPuff(Vector3 pos)
+        {
+            var par = Instantiate(DeathParticlePrefab);
+            par.transform.position = pos;
+            StartCoroutine(TimerF.DoThisAfterSeconds(particleTime, () => { Destroy(par); }));
         }
 
         #region temp

@@ -273,7 +273,8 @@ public class EnemyBehavior : GridObject
         StartCoroutine(TimerF.DoThisAfterSeconds(90f / rotateSpeed * 0.01f + 0.1f, () =>
         {
             // since we've already rolled, just get dmg from the face facing forward (down the board)
-            DamagePlayerInArea(currentAreaList, this.health, true); 
+            DamagePlayerInArea(currentAreaList, this.health, true);
+            GameStateManager.Instance.Puff(transform.position, currentAreaList);
         }));
 
         StartCoroutine(TimerF.DoThisAfterSeconds(visualLastTime, () => { ClearDamageArea(); }));

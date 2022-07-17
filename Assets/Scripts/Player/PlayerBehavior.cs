@@ -11,8 +11,8 @@ public class PlayerBehavior : GridObject
 {
     bool isMyTurn;
 
-    public Vector2Int LastDelta { get; private set; } 
-
+    public Vector2Int LastDelta { get; private set; }
+    
     [SerializeField] DiceAttributeBehavior _dice;
     [SerializeField] DamageAreaBehavior _damageAreaBehavior;
 
@@ -256,10 +256,13 @@ public class PlayerBehavior : GridObject
         // add 0.1f in time just in case
         StartCoroutine(TimerF.DoThisAfterSeconds(90f / rotateSpeed * 0.01f + 0.1f, () => 
             {
+                GameStateManager.Instance.Puff(transform.position, currentAreaList);
                 // since we've already rolled, just get dmg from the face facing forward (down the board)
                 DamageAllEnemyInArea(currentAreaList, _dice.GetFaceNum("forward"), true);
             }));
     }
+
+
 
     void DamageAllEnemyInArea(List<Vector2Int> area, int dmg, bool callFinish)
     {
