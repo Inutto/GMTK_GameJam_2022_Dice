@@ -6,6 +6,10 @@ namespace CustomGrid
 {
     public class GameStateManager : MonoSingleton<GameStateManager>
     {
+        public float turnWaitTime;
+        bool isOkToGoNextTurn;
+        bool blockingTurn;
+
         public GameObject ParticlePrefab;
         public GameObject DeathParticlePrefab;
         public float particleTime;
@@ -78,34 +82,37 @@ namespace CustomGrid
         {
             DebugF.Log(obj.ToString());
 
-
-            // if player
-            if (currentIndex == -1)
+            StartCoroutine(TimerF.DoThisAfterSeconds(turnWaitTime, () =>
             {
-                EventManager.Instance.CallNextActor(player);
-                currentIndex++;
-                return;
-            }
+                // if player
+                if (currentIndex == -1)
+                {
+                    EventManager.Instance.CallNextActor(player);
+                    currentIndex++;
+                    return;
+                }
 
-            
+                //if (actors[currentIndex] != obj)
+                //{
+                //    Debug.LogError("Grid Object: " + obj + "at index: " + actors.IndexOf(obj) + " finished, but is out of order. Current index is: " + currentIndex);
+                //    return;
+                //}
 
-            //if (actors[currentIndex] != obj)
-            //{
-            //    Debug.LogError("Grid Object: " + obj + "at index: " + actors.IndexOf(obj) + " finished, but is out of order. Current index is: " + currentIndex);
-            //    return;
-            //}
-            
-            // if depleted all grid objects in this turn
-            if (currentIndex == actors.Count)
-            {
-                ResetIndexAndCallPlayer();
-                //EventManager.Instance.CallTurnFinished();
-            }
-            else
-            {
-                EventManager.Instance.CallNextActor(actors[currentIndex]);
-                currentIndex++;
-            }
+                // if depleted all grid objects in this turn
+                if (currentIndex == actors.Count)
+                {
+                    ResetIndexAndCallPlayer();
+                    //EventManager.Instance.CallTurnFinished();
+                }
+                else
+                {
+                    EventManager.Instance.CallNextActor(actors[currentIndex]);
+                    currentIndex++;
+                }
+
+            }));
+
+
         }
 
         public void OnEnemyDied(GridObject obj, bool isSquashed, int dmg)

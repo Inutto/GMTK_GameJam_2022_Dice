@@ -720,7 +720,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 0.8778502, y: 1}
+    m_SensorSize: {x: 0.93485343, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -5101,6 +5101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2be1f83302564040acc9c052b5013ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnWaitTime: 0.6
   ParticlePrefab: {fileID: 1348631928614724, guid: d3c8e5275b3587b469967437bc940894, type: 3}
   DeathParticlePrefab: {fileID: 6478552368503966052, guid: 97cb56b2657633c498bf3d20be37c606, type: 3}
   particleTime: 0.6
@@ -7658,7 +7659,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 0.8778502, y: 1}
+    m_SensorSize: {x: 0.93485343, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
