@@ -23,6 +23,11 @@ public class EnemyBehavior : GridObject
     public GameObject enemyUIPrefab;
     public EnemyUIBehavior enemyUIBehavior;
 
+    [Header("Visual")]
+    [SerializeField] float visualLastTime = 0.2f;
+    [SerializeField] GameObject enemyVisualizerPrefab;
+    List<GameObject> myVisualizers;
+
     /// <summary>
     /// Init for enemyUI stuff
     /// </summary>
@@ -79,10 +84,46 @@ public class EnemyBehavior : GridObject
             return;
 
         }
+    }
 
+    void VisualizeDamageArea(Vector2Int delta)
+    {
+        if(myVisualizers == null)
+        {
+            myVisualizers = new(6);
+            for(int i = 0; i < 7; i++)
+            {
+                myVisualizers.Add(Instantiate(enemyVisualizerPrefab));
+                myVisualizers[i].transform.position = new Vector3(0, 0, -2000);
+            }
+        }
 
-        
+        if (delta == Vector2Int.zero) return;
 
+        for (int i = 0; i < currentAreaList.Count; i++){
+            var msg = GridManager.Instance.TryGetObjectAt(GridPosition + currentAreaList[i], out var temp);
+            //Debug.Log(msg.ToString() + "at" + GridPosition + currentAreaList[i]);
+            bool haveStuffonBlock = (msg == TryGetObjMsg.SUCCESS);
+            myVisualizers[i].transform.position = transform.position + new Vector3(currentAreaList[i].x + delta.x, currentAreaList[i].y + delta.y, haveStuffonBlock? -0.6f : 0f);
+        }
+    }
+
+    void ClearDamageArea()
+    {
+        if (myVisualizers == null)
+        {
+            myVisualizers = new(6);
+            for (int i = 0; i < 7; i++)
+            {
+                myVisualizers.Add(Instantiate(enemyVisualizerPrefab));
+                myVisualizers[i].transform.position = new Vector3(0, 0, -2000);
+            }
+        }
+
+        foreach(var item in myVisualizers)
+        {
+            item.transform.position = new Vector3(0, 0, -2000);
+        }
     }
 
     protected override void OnTakeDamage(GridObject source, GridObject target, int damage)
@@ -103,12 +144,19 @@ public class EnemyBehavior : GridObject
             // since InflictDamage is invoked AFTER player move, delta length should be 0 when player
             // crashes enemy, but longer when player is area attacking
             Vector2Int delta = GridPosition - source.GridPosition;
-            var msgBehind = GridManager.Instance.TryGetObjectAt(GridPosition + delta, out var obj);
+            Vector2Int playerDelta = new();
+            bool wasPlayer = source.TryGetComponent<PlayerBehavior>(out var player);
+            if (wasPlayer)
+            {
+                playerDelta = player.LastDelta;
+            }
+
+            var msgBehind = GridManager.Instance.TryGetObjectAt(GridPosition + (wasPlayer ? playerDelta : delta), out var obj);
             if(delta.magnitude == 0)    // only knockback when player crash enemy
             {
                 if (msgBehind == TryGetObjMsg.FLOOR)
                 {
-                    KnockBack(delta);
+                    KnockBack(wasPlayer ? playerDelta : delta);
                 }
                 else if (msgBehind == TryGetObjMsg.SUCCESS)
                 {
@@ -141,11 +189,13 @@ public class EnemyBehavior : GridObject
             StartCoroutine(TimerF.DoThisAfterSeconds(2f, () => { canDrawGizmos = false; }));
         }
 
+        VisualizeDamageArea(delta);
         // add 0.1f in time just in case
         StartCoroutine(TimerF.DoThisAfterSeconds(90f / rotateSpeed * 0.01f + 0.1f, () =>
         {
+            ClearDamageArea();
             // since we've already rolled, just get dmg from the face facing forward (down the board)
-            DamagePlayerInArea(currentAreaList, this.health - 1, true);
+            DamagePlayerInArea(currentAreaList, this.health - 1, true); 
         }));
 
     }

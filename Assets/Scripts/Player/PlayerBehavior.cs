@@ -11,6 +11,8 @@ public class PlayerBehavior : GridObject
 {
     bool isMyTurn;
 
+    public Vector2Int LastDelta { get; private set; } 
+
     [SerializeField] DiceAttributeBehavior _dice;
     [SerializeField] DamageAreaBehavior _damageAreaBehavior;
 
@@ -41,13 +43,12 @@ public class PlayerBehavior : GridObject
             LevelManager.Instance.RestartLevel();
         }
 
-
-
         if (!isMyTurn) return;
 
         if (!_isMoving)
         {
             var delta = GetCurrentInputDelta();
+            LastDelta = delta;
 
             // if no input return
             if (delta == Vector2Int.zero)
@@ -187,7 +188,8 @@ public class PlayerBehavior : GridObject
             var areas = _damageAreaBehavior.GetDamageArea(_dice.GetFaceNum(DeltaToDirString(delta)) - 1, delta);
             for (int i = 0; i < areas.Count; i++)
             {
-                visualizers[i].transform.position = transform.position + new Vector3(areas[i].x + delta.x, areas[i].y + delta.y, -0.6f);
+                bool haveStuffonBlock = GridManager.Instance.TryGetObjectAt(GridPosition + delta + areas[i], out var temp) == TryGetObjMsg.SUCCESS;
+                visualizers[i].transform.position = transform.position + new Vector3(areas[i].x + delta.x, areas[i].y + delta.y, haveStuffonBlock ? -0.6f : 0f);
             }
             meeleVisualizer.transform.position = transform.position + new Vector3(delta.x, delta.y, -0.6f);
         }
@@ -233,7 +235,8 @@ public class PlayerBehavior : GridObject
 
     IEnumerator AttackTargetDelay(GridObject obj, Vector2Int delta)
     {
-        yield return new WaitForSeconds(0.1f);
+        _isMoving = true;
+        yield return new WaitForSeconds(0.05f);
         var dmg = _dice.GetFaceNum(DeltaToDirString(delta));
         EventManager.Instance.CallInflictDamage(this, obj, dmg);
     }
