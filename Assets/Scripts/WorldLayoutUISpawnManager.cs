@@ -37,7 +37,7 @@ public class WorldLayoutUISpawnManager : MonoSingleton<WorldLayoutUISpawnManager
         if (obj.Type == ObjectType.Player)
         {
 
-            var targetPos = obj.gameObject.transform.position + new Vector3(0, -1, -2);
+            var targetPos = obj.gameObject.transform.position + new Vector3(0, -4, -2);
             // Hard ref, because its easier
             var message = "Your Turn!";
             var color = Color.red;
@@ -52,7 +52,14 @@ public class WorldLayoutUISpawnManager : MonoSingleton<WorldLayoutUISpawnManager
         {
             var targetPos = obj.gameObject.transform.position + new Vector3(0, 1, -2);
             var message = "Squashed!";
-            var color = Color.blue;
+            Color color = Color.blue;
+
+            // check enemy AI state
+            var enemyBehavior = obj.gameObject.GetComponent<EnemyBehavior>();
+            if(enemyBehavior.enemyAIType == EnemyBehavior.EnemyAIType.IDLE)
+            {
+                color = Color.green;
+            }
             DrawTextAtPosition(targetPos, message, color, 1.5f, Ease.OutBounce);
         }
         
@@ -71,7 +78,19 @@ public class WorldLayoutUISpawnManager : MonoSingleton<WorldLayoutUISpawnManager
         Color damageColor = Color.white;
         if(target.Type == ObjectType.Enemy)
         {
-            damageColor = Color.blue;
+
+            // check enemy state
+            var enemyBehavior = target.GetComponent<EnemyBehavior>();
+            if(enemyBehavior.enemyAIType == EnemyBehavior.EnemyAIType.IDLE)
+            {
+                damageColor = Color.green;
+            } else
+            {
+                damageColor = Color.blue;
+            }
+
+
+            
         } else if(target.Type == ObjectType.Player)
         {
             damageColor = Color.red;

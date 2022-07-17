@@ -1093,7 +1093,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7782673, y: 1}
+    m_SensorSize: {x: 1.7770962, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1899,6 +1899,10 @@ PrefabInstance:
       propertyPath: enemyAIType
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
+      propertyPath: enemyUIPrefab
+      value: 
+      objectReference: {fileID: 8143979081417470996, guid: ef5c8f4ebd61b344c83a08970c572441, type: 3}
     - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: enemyVisualizerPrefab
       value: 
@@ -4474,6 +4478,10 @@ PrefabInstance:
       propertyPath: enemyAIType
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
+      propertyPath: enemyUIPrefab
+      value: 
+      objectReference: {fileID: 8143979081417470996, guid: ef5c8f4ebd61b344c83a08970c572441, type: 3}
     - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: enemyVisualizerPrefab
       value: 
@@ -8937,6 +8945,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
+      propertyPath: enemyUIPrefab
+      value: 
+      objectReference: {fileID: 8143979081417470996, guid: ef5c8f4ebd61b344c83a08970c572441, type: 3}
+    - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: enemyVisualizerPrefab
       value: 
       objectReference: {fileID: 6827047206089366598, guid: 2bfbda84942b4354493b4e9da3d1fa1b, type: 3}
@@ -9230,7 +9242,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7782673, y: 1}
+    m_SensorSize: {x: 1.7770962, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -9648,6 +9660,10 @@ PrefabInstance:
       propertyPath: enemyAIType
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
+      propertyPath: enemyUIPrefab
+      value: 
+      objectReference: {fileID: 8143979081417470996, guid: ef5c8f4ebd61b344c83a08970c572441, type: 3}
     - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: enemyVisualizerPrefab
       value: 
@@ -10524,6 +10540,10 @@ PrefabInstance:
       propertyPath: enemyAIType
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
+      propertyPath: enemyUIPrefab
+      value: 
+      objectReference: {fileID: 8143979081417470996, guid: ef5c8f4ebd61b344c83a08970c572441, type: 3}
     - target: {fileID: 2892673688385651687, guid: 5c5830f41d22f6c438adbe9b5ef09cbe, type: 3}
       propertyPath: enemyVisualizerPrefab
       value: 
