@@ -185,8 +185,9 @@ namespace CustomGrid
         void EndTurn()
         {
             DebugF.Log("End Turn");
-            
-            StartCoroutine(WaitForRollTime());
+
+            //StartCoroutine(WaitForRollTime());
+            StartCoroutine(TimerF.DoThisAfterSeconds(0.05f, () => { EventManager.Instance.CallFinishAction(this); }));
         }
 
         IEnumerator WaitForRollTime() {

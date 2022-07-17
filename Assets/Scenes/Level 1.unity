@@ -1031,7 +1031,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7768314, y: 1}
+    m_SensorSize: {x: 1.7772436, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2564,7 +2564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ddba3c4074da764da31bbf655ef2032, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxBuildIndex: 4
+  maxBuildIndex: 6
   GameLoseMenu: {fileID: 2136713381}
   GameWinMenu: {fileID: 1622967025}
 --- !u!1 &511111068
@@ -10231,7 +10231,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7768314, y: 1}
+    m_SensorSize: {x: 1.7772436, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
