@@ -154,6 +154,8 @@ MonoBehaviour:
   currentAreaList: []
   enemyUIPrefab: {fileID: 8143979081417470996, guid: 5361415d01523ae419d9130cb3e95e4f, type: 3}
   enemyUIBehavior: {fileID: 0}
+  visualLastTime: 0.65
+  enemyVisualizerPrefab: {fileID: 0}
 --- !u!114 &2892673688385651686
 MonoBehaviour:
   m_ObjectHideFlags: 0
